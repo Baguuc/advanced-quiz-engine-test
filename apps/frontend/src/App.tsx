@@ -1,11 +1,11 @@
-import {useQuery} from "@tanstack/react-query";
-import {useState} from "react";
-import {Button} from "@/components/ui/button.tsx";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Button } from "@/components/ui/button.tsx";
 
 function App() {
   const query = useQuery({
     queryKey: ["hello"],
-    queryFn: () => fetch("http://localhost:3000").then(res => res.text())
+    queryFn: () => fetch("http://localhost:3000").then((res) => res.text()),
   });
   const [count, setCount] = useState(0);
 
@@ -18,7 +18,7 @@ function App() {
         <Button onClick={() => setCount(count - 1)}>-</Button>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
