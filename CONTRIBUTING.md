@@ -2,13 +2,11 @@
 
 Kilka prostych zasad dotyczących pracy z repozytorium.
 
-## 1. Trello
+## 1. Issue
 
-Każdy nowy feature powinien mieć swoją kartę na Trello.
-
-Dodaj kartę z numerem i krótkim opisem tego, co planujesz zrobić, np.:
-
-> `#67 Zmiana layoutu strony głównej`
+Jak masz jakiś pomysł, to dodaj issue na githubie.
+Opisz jakoś fajnie, polecam dodać checkboxy, bo wtedy w razie czego łatwo rozbić na mniejsze issue.
+Podłącz issue do [projektu](https://github.com/users/Vtraxio/projects/5).
 
 ## 2. Branch
 
