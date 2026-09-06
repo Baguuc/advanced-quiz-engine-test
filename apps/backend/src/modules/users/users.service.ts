@@ -3,7 +3,10 @@ import type { CreateUserInput, User } from "@aqe/common/api/contracts/users";
 
 export default {
   getUsers: async (): Promise<User[]> => {
-    return [];
+    return [
+      { id: "1", name: "John Doe", email: "john.doe@example.com" },
+      { id: "2", name: "Jane Smith", email: "jane.smith@example.com" },
+    ];
   },
 
   create: async (userData: CreateUserInput): Promise<User> => {

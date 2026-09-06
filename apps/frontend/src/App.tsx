@@ -1,22 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
+import { usersApi } from "@aqe/common/api/client/users";
 
 function App() {
   const query = useQuery({
     queryKey: ["hello"],
-    queryFn: () => fetch("http://localhost:3000/users").then((res) => res.text()),
+    queryFn: () => usersApi.list(),
   });
 
   const mutation = useMutation({
-    mutationFn: () =>
-      fetch("http://localhost:3000/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: "John Doe", email: "john.doe@example.com" }),
-      }),
+    mutationFn: () => usersApi.create({ name: "John Doe", email: "john.doe@example.com" }),
     onSuccess: async () => {
       await query.refetch();
     },
@@ -26,7 +20,7 @@ function App() {
 
   return (
     <>
-      <h1>Z backendu: {query.data}</h1>
+      <h1>Z backendu: {query.data?.map((user) => user.name).join(", ")}</h1>
       <Button onClick={() => mutation.mutate()}>Dodaj syf</Button>
       <div className="flex p-2 items-center">
         <h1 className="text-xl mr-2">{count}</h1>
