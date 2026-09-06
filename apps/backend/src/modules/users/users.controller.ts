@@ -3,7 +3,7 @@ import usersService from "./users.service.ts";
 import type { Request, Response } from "express";
 
 export default {
-  getUsers: async (req: Request, res: Response) => {
+  getUsers: async (_req: Request, res: Response) => {
     res.status(200).json(await usersService.getUsers());
   },
 
