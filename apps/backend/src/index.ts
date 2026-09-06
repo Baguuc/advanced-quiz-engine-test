@@ -5,6 +5,7 @@ import usersRouter from "./modules/users/users.router.ts";
 const app: Express = express();
 
 app.use(cors());
+app.use(express.json());
 
 app.use("/users", usersRouter);
 
