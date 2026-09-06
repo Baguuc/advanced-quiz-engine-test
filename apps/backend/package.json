@@ -26,9 +26,9 @@
     "typescript-eslint": "^8.69.0"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.102.8",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "pg": "^8.23.0"
+    "pg": "^8.23.0",
+    "@aqe/common": "workspace:*"
   }
 }

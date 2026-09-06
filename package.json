@@ -11,9 +11,6 @@
   },
   "keywords": [],
   "author": "",
-  "dependencies": {
-    "common": "workspace:*"
-  },
   "license": "ISC",
   "devEngines": {
     "packageManager": {

@@ -206,10 +206,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      common:
-        specifier: workspace:*
-        version: link:packages/common
     devDependencies:
       prettier:
         specifier: 3.9.6
@@ -217,9 +213,9 @@ importers:
 
   apps/backend:
     dependencies:
-      '@tanstack/react-query':
-        specifier: ^5.102.8
-        version: 5.102.8(react@19.2.8)
+      '@aqe/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       cors:
         specifier: ^2.8.6
         version: 2.8.6
@@ -349,7 +345,30 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)
 
-  packages/common: {}
+  packages/common:
+    dependencies:
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.9.1(jiti@2.7.0))
+      eslint:
+        specifier: ^10.9.1
+        version: 10.9.1(jiti@2.7.0)
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@10.9.1(jiti@2.7.0))
+      globals:
+        specifier: ^17.12.0
+        version: 17.12.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      typescript-eslint:
+        specifier: ^8.69.0
+        version: 8.69.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.3)
 
 packages:
 
