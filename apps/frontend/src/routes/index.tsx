@@ -1,9 +1,14 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { usersApi } from "@aqe/common/api/client/users";
 
-function App() {
+export const Route = createFileRoute("/")({
+  component: Index,
+});
+
+function Index() {
   const query = useQuery({
     queryKey: ["hello"],
     queryFn: () => usersApi.list(),
@@ -19,7 +24,8 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
+    <div className="p-2">
+      <h3>Welcome Home!</h3>
       <h1>Z backendu: {query.data?.map((user) => user.name).join(", ")}</h1>
       <Button onClick={() => mutation.mutate()}>Dodaj syf</Button>
       <div className="flex p-2 items-center">
@@ -27,8 +33,6 @@ function App() {
         <Button onClick={() => setCount(count + 1)}>+</Button>
         <Button onClick={() => setCount(count - 1)}>-</Button>
       </div>
-    </>
+    </div>
   );
 }
-
-export default App;

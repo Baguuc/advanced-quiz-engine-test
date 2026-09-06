@@ -8,7 +8,7 @@ import reactX from "eslint-plugin-react-x";
 import reactDom from "eslint-plugin-react-dom";
 
 export default defineConfig([
-  globalIgnores(["dist", "eslint.config.ts", "src/components/ui/**/*"]),
+  globalIgnores(["dist", "eslint.config.ts", "src/components/ui/**/*", "src/routeTree.gen.ts"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -25,6 +25,9 @@ export default defineConfig([
         project: ["./tsconfig.node.json", "./tsconfig.app.json"],
       },
       globals: globals.browser,
+    },
+    rules: {
+      "react-refresh/only-export-components": "off",
     },
   },
 ]);

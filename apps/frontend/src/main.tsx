@@ -1,17 +1,25 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
-import { QueryClient, QueryClientContext } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
+import { QueryClient } from "@tanstack/react-query";
+import { routeTree } from "@/routeTree.gen.ts";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
+const router = createRouter({ routeTree });
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <QueryClientContext value={queryClient}>
-      <App />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientContext>
-  </StrictMode>,
-);
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+const rootElement = document.getElementById("root")!;
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <StrictMode>
+      <RouterProvider router={router} />
+    </StrictMode>,
+  );
+}
