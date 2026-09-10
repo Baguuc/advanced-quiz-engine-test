@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { usersApi } from "@aqe/common/api/client/users";
+import { FormCreator } from "@/components/formCreator";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -25,6 +26,7 @@ function Index() {
 
   return (
     <div className="p-2">
+      <FormCreator />
       <h3>Welcome Home!</h3>
       <h1>Z backendu: {query.data?.map((user) => user.name).join(", ")}</h1>
       <Button onClick={() => mutation.mutate()}>Dodaj syf</Button>
