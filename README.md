@@ -27,7 +27,6 @@ docker compose up -d
 
 # Stop
 docker compose down
-
 # Stop AND delete the database data
 docker compose down -v
 
