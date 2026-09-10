@@ -1,13 +1,27 @@
 {
-  "name": "common",
+  "name": "@aqe/common",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.12.0",
+    "typescript-eslint": "^8.69.0"
+  },
+  "dependencies": {
+    "zod": "^4.5.4"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  }
 }

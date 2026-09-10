@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "pnpm --parallel --filter backend --filter frontend dev",
+    "format": "prettier --write .",
+    "lint": "pnpm --sequential --filter backend --filter frontend lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "dependencies": {
-    "common": "workspace:*"
-  },  
   "license": "ISC",
   "devEngines": {
     "packageManager": {
@@ -20,5 +20,8 @@
     }
   },
   "packageManager": "pnpm@11.25.0",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "prettier": "3.9.6"
+  }
 }
