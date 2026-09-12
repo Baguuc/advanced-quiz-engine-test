@@ -1,16 +1,26 @@
-import express, { type Express } from "express";
-import cors from "cors";
-import usersRouter from "./modules/users/users.router.ts";
-import { errorHandler } from "./util/error.ts";
+import { RPCHandler } from "@orpc/server/node";
+import { createServer } from "node:http";
+import { router } from "./routes/index.ts";
+import { CORSHandlerPlugin } from "@orpc/server/plugins";
 
-const app: Express = express();
+const handler = new RPCHandler(router, {
+  plugins: [
+    new CORSHandlerPlugin({
+      origin: "*",
+    }),
+  ],
+});
 
-app.use(cors());
-app.use(express.json());
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+const server = createServer(async (req, res) => {
+  const { matched } = await handler.handle(req, res, { prefix: "/rpc" });
 
-app.use("/users", usersRouter);
+  if (!matched) {
+    return;
+  }
 
-app.use(errorHandler);
+  res.statusCode = 404;
+  res.end("Not found");
+});
 
-console.log("Server starting @ port 3000.");
-app.listen(3000);
+server.listen(3000, "127.0.0.1", () => console.log("Listening on 127.0.0.1:3000"));
