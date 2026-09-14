@@ -1,26 +1,37 @@
 import { RPCHandler } from "@orpc/server/node";
-import { createServer } from "node:http";
 import { router } from "./routes/index.ts";
-import { CORSHandlerPlugin } from "@orpc/server/plugins";
+import express from "express";
+import cors from "cors";
+import { onError } from "@orpc/server";
+
+const app = express();
+
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
+
+// TODO: better-auth
+// app.all("/auth/*splat", toNodeHandler(auth));
 
 const handler = new RPCHandler(router, {
-  plugins: [
-    new CORSHandlerPlugin({
-      origin: "*",
+  interceptors: [
+    onError((error) => {
+      console.log(error);
     }),
   ],
 });
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-const server = createServer(async (req, res) => {
-  const { matched } = await handler.handle(req, res, { prefix: "/rpc" });
+app.use("/rpc/{*path}", async (req, res, next) => {
+  const { matched } = await handler.handle(req, res, {
+    prefix: "/rpc",
+  });
 
-  if (!matched) {
+  if (matched) {
     return;
   }
 
-  res.statusCode = 404;
-  res.end("Not found");
+  next();
 });
 
-server.listen(3000, "127.0.0.1", () => console.log("Listening on 127.0.0.1:3000"));
+app.listen(3000, () => console.log("Server listening on port 3000"));
