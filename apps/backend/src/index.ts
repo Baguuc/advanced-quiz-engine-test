@@ -1,16 +1,37 @@
-import express, { type Express } from "express";
+import { RPCHandler } from "@orpc/server/node";
+import { router } from "./routes/index.ts";
+import express from "express";
 import cors from "cors";
-import usersRouter from "./modules/users/users.router.ts";
-import { errorHandler } from "./util/error.ts";
+import { onError } from "@orpc/server";
 
-const app: Express = express();
+const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
 
-app.use("/users", usersRouter);
+// TODO: better-auth
+// app.all("/auth/*splat", toNodeHandler(auth));
 
-app.use(errorHandler);
+const handler = new RPCHandler(router, {
+  interceptors: [
+    onError((error) => {
+      console.log(error);
+    }),
+  ],
+});
 
-console.log("Server starting @ port 3000.");
-app.listen(3000);
+app.use("/rpc/{*path}", async (req, res, next) => {
+  const { matched } = await handler.handle(req, res, {
+    prefix: "/rpc",
+  });
+
+  if (matched) {
+    return;
+  }
+
+  next();
+});
+
+app.listen(3000, () => console.log("Server listening on port 3000"));
