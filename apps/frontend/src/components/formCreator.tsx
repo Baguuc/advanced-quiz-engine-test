@@ -21,7 +21,7 @@ function FormCreator() {
     <Dialog>
       <form>
         <DialogTrigger render={<Button variant="outline">Stwórz ankietę</Button>} />
-        <DialogContent className="sm:max-w-full w-7/10">
+        <DialogContent className="sm:max-w-full w-6/10">
           {page === "name" && (
             <>
               <DialogHeader>
@@ -61,12 +61,34 @@ function FormCreator() {
               </div>
 
               <DialogFooter>
-                <Button onClick={() => setPage("name")}>Wróć do nazwy ankiety</Button>
+                <Button variant="outline" onClick={() => setPage("name")}>Wróć do nazwy ankiety</Button>
                 <Button onClick={() => setPage("create")}>Przejdź do finalizacji</Button>
               </DialogFooter>
             </>
           )}
+               
+          {page === "create" && (<>
+            <DialogHeader>
+              <DialogTitle>Finalizacja ankiety</DialogTitle>
+            </DialogHeader>
 
+            <div className="-mx-4 scrollbar-auto max-h-[70vh] overflow-y-auto px-4 grid place-items-center">
+              <h3 className="mt-4 text-base font-semibold">
+                Larpuj generowanie linku do ankiety. 
+              </h3>
+              <div className="mt-4 text-sm">
+                <h3> Link do ankiety:</h3>
+                <p className="mt-2 text-sm decoration-gray-500">
+                  https://musztardoweankiety/ankieta-67/fillout.ruskamafia.org
+                </p>
+              </div>
+            </div>
+
+            <DialogFooter className="place-items-end">
+              <Button variant="outline" onClick={() => setPage("questions")}>Wróć do pytań</Button>
+              <Button type="submit">Stwórz ankietę</Button>
+            </DialogFooter>
+          </>)}
         </DialogContent>
       </form>
     </Dialog>
