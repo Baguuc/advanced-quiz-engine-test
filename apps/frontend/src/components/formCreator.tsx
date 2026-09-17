@@ -18,6 +18,26 @@ function FormCreator() {
         <Dialog>
             <form>
                 <DialogTrigger render={<Button variant="outline">Stwórz ankietę</Button>} />
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Stwórz ankietę</DialogTitle>
+                    </DialogHeader>
+
+                    <FieldGroup>
+                        <Field>
+                            <Label htmlFor="formName">Podaj nazwę ankiety*</Label>
+                            <Input id="formName" placeholder="Nazwa ankiety" required />
+                        </Field>
+                        <Field>
+                            <Label htmlFor="formDescription">Podaj opis ankiety</Label>
+                            <Input id="formDescription" placeholder="Opis ankiety" />
+                        </Field>
+                    </FieldGroup>
+
+                    <DialogFooter>
+                        <Button type="submit">Stwórz</Button>
+                    </DialogFooter>
+                </DialogContent>
             </form>
         </Dialog>
     )
