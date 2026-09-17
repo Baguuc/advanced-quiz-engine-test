@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { orpc } from "@/lib/client.ts";
 import { queryClient } from "@/main.tsx";
+import { FormCreator } from "@/components/formCreator";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -24,6 +25,7 @@ function Index() {
 
   return (
     <div className="p-2">
+      <FormCreator />
       <h3>Welcome Home!</h3>
       <h1>Z backendu: {query.data?.map((planet) => planet.name).join(", ")}</h1>
       <Button onClick={() => mutation.mutate({ name: "Jupiter", description: "Makes you stupider" })}>Dodaj syf</Button>
