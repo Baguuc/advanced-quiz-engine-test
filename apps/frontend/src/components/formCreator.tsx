@@ -51,13 +51,48 @@ function FormCreator() {
                 <DialogTitle>Dodaj pytania do ankiety</DialogTitle>
               </DialogHeader>
 
-              <div className="-mx-4 scrollbar-auto max-h-[70vh] overflow-y-auto px-4">
-                Larpuj dodawanie pytań do ankiety. Możesz dodać pytania, ustawić ich typ (np. otwarte, zamknięte) i ustawić opcje odpowiedzi dla pytań zamkniętych.
+              <div className=" scrollbar-auto max-h-[70vh] overflow-y-auto px-4 grid place-items-start">
+                <h3 className="mt-4 text-base font-semibold">
+                  Larpuj dodawanie pytań do ankiety. 
+                </h3>
+                <div className="mt-4">
+                  <h3 className="text-lg font-medium">
+                    Pytanie 1: Jaki jest twój ulubiony sposób musztardyzaji? 
+                  </h3>
+                  <p className="mt-4 text-sm">
+                      A. Wąchanie musztardy
+                  </p>
+                  <p className="mt-4 text-sm">
+                      B. Smarowanie musztardą
+                  </p>
+                  <p className="mt-4 text-sm">
+                      C. Jedzenie musztardy 
+                  </p>
+                  <p className="mt-4 text-sm">
+                      D. Inne
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <h3 className="text-lg font-medium">
+                    Pytanie 2: Jak często w tygoniu się musztardujesz? 
+                  </h3>
+                  <p className="mt-4 text-sm">
+                      A. 1-7 razy w tygodniu
+                  </p>
+                  <p className="mt-4 text-sm">
+                      B. 2-14 razy w tygodniu
+                  </p>
+                  <p className="mt-4 text-sm">
+                      C. 14-17 razy w tygodniu
+                  </p>
+                  <p className="mt-4 text-sm">
+                      D. 17-49 razy w tygodniu
+                  </p>
+                </div>
 
-                <p className="mt-4 text-sm">
-                    Larp Pytanie 1 \n CZy six seven to mango i musztarda? \n Odpowiedzi: \n - Tak \n - Nie \n - Może
-                </p>
-
+                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  Dodaj Pytanie
+                </button>
               </div>
 
               <DialogFooter>
