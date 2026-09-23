@@ -1,0 +1,1 @@
+ALTER TABLE "answer_options" RENAME TO "answer_option";

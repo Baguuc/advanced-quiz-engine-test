@@ -4,8 +4,14 @@ import type { RouterClientType } from "backend";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 
 const link = new RPCLink({
-  origin: "http://127.0.0.1:3000",
+  origin: "http://localhost:3000",
   url: "/rpc",
+  fetch: (url, init) => {
+    return globalThis.fetch(url, {
+      ...init,
+      credentials: "include",
+    });
+  },
 });
 
 export const client: RouterClientType = createORPCClient(link);
