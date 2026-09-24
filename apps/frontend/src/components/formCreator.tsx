@@ -47,6 +47,13 @@ function FormCreator() {
     );
   };
 
+  function AddQuestion() {
+    setQuestions(prev => [
+      ...prev,
+      { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }
+    ]);
+  }
+
   return (
     <Dialog>
       <form>
@@ -81,12 +88,12 @@ function FormCreator() {
                 <DialogTitle>Dodaj pytania do ankiety</DialogTitle>
               </DialogHeader>
 
-              <div className=" scrollbar-auto max-h-[70vh] overflow-y-auto px-4 grid place-items-start">
+              <div className="max-h-[70vh] overflow-y-auto px-4 grid place-items-center">
                 <h3 className="mt-4 text-base font-semibold">
                   Larpuj dodawanie pytań do ankiety. 
                 </h3>
 
-                <div className="mt-4">
+                <div className="scrollbar-auto max-h-[50vh] overflow-y-auto px-4 m-5 grid place-items-center">
                   {questions.map((question, questionIndex) => (
                     <div key={questionIndex} className="mb-4 p-4 border rounded">
                       <Input value={question.question} onChange={(e) => updateQuestion(questionIndex, e.target.value)} className="mb-2" />
@@ -101,11 +108,12 @@ function FormCreator() {
                   ))}
                 </div>
 
-                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-50 rounded" onClick={AddQuestion}>
                   Dodaj Pytanie
                 </button>
               </div>
 
+              
               <DialogFooter>
                 <Button variant="outline" onClick={() => setPage("name")}>Wróć do nazwy ankiety</Button>
                 <Button onClick={() => setPage("create")}>Przejdź do finalizacji</Button>
