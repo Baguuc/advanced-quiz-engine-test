@@ -16,6 +16,36 @@ import { Label } from "@/components/ui/label";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
+  const [questions, setQuestions] = useState([
+    { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] },
+    { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] },
+    { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }, 
+  ]);
+
+  const updateQuestion = (questionIndex: number, value: string) => {
+    setQuestions(prev =>
+      prev.map((question, index) =>
+        index === questionIndex
+          ? { ...question, question: value }
+          : question
+      )
+    );
+  };
+
+  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
+    setQuestions(prev =>
+      prev.map((question, index) =>
+        index === questionIndex
+          ? {
+              ...question,
+              options: question.options.map((option, index) =>
+                index === optionIndex ? value : option
+              ),
+            }
+          : question
+      )
+    );
+  };
 
   return (
     <Dialog>
@@ -55,39 +85,20 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">
                   Larpuj dodawanie pytań do ankiety. 
                 </h3>
+
                 <div className="mt-4">
-                  <h3 className="text-lg font-medium">
-                    Pytanie 1: Jaki jest twój ulubiony sposób musztardyzaji? 
-                  </h3>
-                  <p className="mt-4 text-sm">
-                      A. Wąchanie musztardy
-                  </p>
-                  <p className="mt-4 text-sm">
-                      B. Smarowanie musztardą
-                  </p>
-                  <p className="mt-4 text-sm">
-                      C. Jedzenie musztardy 
-                  </p>
-                  <p className="mt-4 text-sm">
-                      D. Inne
-                  </p>
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-lg font-medium">
-                    Pytanie 2: Jak często w tygoniu się musztardujesz? 
-                  </h3>
-                  <p className="mt-4 text-sm">
-                      A. 1-7 razy w tygodniu
-                  </p>
-                  <p className="mt-4 text-sm">
-                      B. 2-14 razy w tygodniu
-                  </p>
-                  <p className="mt-4 text-sm">
-                      C. 14-17 razy w tygodniu
-                  </p>
-                  <p className="mt-4 text-sm">
-                      D. 17-49 razy w tygodniu
-                  </p>
+                  {questions.map((question, questionIndex) => (
+                    <div key={questionIndex} className="mb-4 p-4 border rounded">
+                      <Input value={question.question} onChange={(e) => updateQuestion(questionIndex, e.target.value)} className="mb-2" />
+                      <ul>
+                        {question.options.map((option, optionIndex) => (
+                          <li key={optionIndex}>
+                            <Input value={option} onChange={(e) => {updateOption(questionIndex, optionIndex, e.target.value)}} className="mb-1" />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
 
                 <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
