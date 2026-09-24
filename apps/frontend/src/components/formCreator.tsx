@@ -16,11 +16,7 @@ import { Label } from "@/components/ui/label";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
-  const [questions, setQuestions] = useState([
-    { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] },
-    { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] },
-    { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }, 
-  ]);
+  const [questions, setQuestions] = useState([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
 
   const updateQuestion = (questionIndex: number, value: string) => {
     setQuestions(prev =>
@@ -52,6 +48,16 @@ function FormCreator() {
       ...prev,
       { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }
     ]);
+  }
+
+  function addOption(questionIndex: number) {
+    setQuestions(prev =>
+      prev.map((question, index) =>
+        index === questionIndex
+          ? { ...question, options: [...question.options, "Nowa Opcja"] }
+          : question
+      )
+    );
   }
 
   return (
@@ -97,20 +103,27 @@ function FormCreator() {
                   {questions.map((question, questionIndex) => (
                     <div key={questionIndex} className="mb-4 p-4 border rounded">
                       <Input value={question.question} onChange={(e) => updateQuestion(questionIndex, e.target.value)} className="mb-2" />
-                      <ul>
-                        {question.options.map((option, optionIndex) => (
-                          <li key={optionIndex}>
-                            <Input value={option} onChange={(e) => {updateOption(questionIndex, optionIndex, e.target.value)}} className="mb-1" />
-                          </li>
-                        ))}
-                      </ul>
+
+                      <div className="mb-2 text-sm m-3 font-semibold">Opcje:
+                        <ul>
+                          {question.options.map((option, optionIndex) => (
+                            <li key={optionIndex}>
+                              <Input value={option} onChange={(e) => {updateOption(questionIndex, optionIndex, e.target.value)}} className="mb-1" />
+                            </li>
+                          ))}
+                        </ul>
+
+                        <Button variant="secondary" onClick={() => addOption(questionIndex)}>
+                          Dodaj Opcję
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-50 rounded" onClick={AddQuestion}>
+                <Button variant="outline" className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 w-50 h-10" onClick={AddQuestion}>
                   Dodaj Pytanie
-                </button>
+                </Button>
               </div>
 
               
