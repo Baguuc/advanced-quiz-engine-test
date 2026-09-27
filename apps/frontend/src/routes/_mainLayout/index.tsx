@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardAction, CardTitle } from "@/components/ui/card";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
 
 const surveys = [
   { title: "Ankieta 1", description: "Opis ankiety 1", isActive: true, imageSrc: "https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg" }, 
@@ -11,11 +9,11 @@ const surveys = [
   { title: "Ankieta 3", description: "Opis ankiety 3", isActive: false, imageSrc: "https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg" },
 ];
 
-export const Route = createFileRoute("/dashboard")({
-  component: Dashboard,
+export const Route = createFileRoute("/_mainLayout/")({
+  component: Index,
 });
 
-function Dashboard() {
+function Index() {
   return (
     <main className="min-h-[calc(100vh-65px)] bg-white px-5 py-6 text-slate-950 sm:px-8 lg:px-14 lg:py-10">
       <div className="flex flex-wrap items-stretch gap-6 justify-between">

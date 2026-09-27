@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from 'react';
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/(auth)/sign-in")({
   component: Index,
 });
 
@@ -42,7 +42,7 @@ function Index() {
 
             <Input className='m-2 w-min rounded-lg' type="Submit" value='Zaloguj się' />
             <div className='m-2 text-orange-500'>{message}</div>
-            <Link to={"/register" as any} className="text-blue-700 hover:text-purple-600 m-2">Nie mam jeszcze konta</Link>
+            <Link to="/sign-up" className="text-blue-700 hover:text-purple-600 m-2">Nie mam jeszcze konta</Link>
         </form>
       </div>
     </div>

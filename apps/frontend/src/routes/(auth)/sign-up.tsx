@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label"
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/register')({
+export const Route = createFileRoute('/(auth)/sign-up')({
   component: RouteComponent,
 })
 
@@ -37,7 +37,7 @@ function RouteComponent() {
         <Input className='m-2 w-23/24' onChange={(e) => setPassword2(e.target.value)} value={password2} type="password" id="password2" name="password2"/>
         <Input className='rounded-lg w-min m-2' type="submit" value="Rejestruj"/>
         <div id='MessageText' className='ml-2 text-orange-500'>{message}</div>
-        <Link to="/" className='hover:text-purple-600 text-blue-700 m-2'>Mam już konto</Link>
+        <Link to="/sign-in" className='hover:text-purple-600 text-blue-700 m-2'>Mam już konto</Link>
       </form>
 
     </div>
