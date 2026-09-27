@@ -1,10 +1,10 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_mainLayout")({
-  component: RouteComponent,
+  component: MainLayout,
 });
 
-function RouteComponent() {
+function MainLayout() {
   return (
     <div>
       <div className="p-2 flex gap-2">

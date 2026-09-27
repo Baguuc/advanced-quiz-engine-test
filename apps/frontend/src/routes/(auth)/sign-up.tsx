@@ -4,10 +4,10 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/(auth)/sign-up')({
-  component: RouteComponent,
+  component: SignUpRoute,
 })
 
-function RouteComponent() {
+function SignUpRoute() {
   const [name, setName] = useState('')
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')

@@ -4,10 +4,10 @@ import { Label } from "@/components/ui/label";
 import { useState } from 'react';
 
 export const Route = createFileRoute("/(auth)/sign-in")({
-  component: Index,
+  component: SignInRoute,
 });
 
-function Index() {
+function SignInRoute() {
   const [message, setMessage] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("");
