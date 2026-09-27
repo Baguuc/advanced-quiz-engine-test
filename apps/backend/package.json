@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@aqe/common": "workspace:*",
+    "@better-auth/i18n": "^1.7.6",
     "@orpc/server": "2.0.0-beta.35",
     "better-auth": "^1.7.5",
     "cors": "^2.8.6",
