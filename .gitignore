@@ -23,4 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 .pnpm-store
-apps/frontend/src/routeTree.gen.ts
