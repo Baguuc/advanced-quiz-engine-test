@@ -1,9 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { GalleryVerticalEnd } from "lucide-react";
 import { SignupForm } from "@/components/auth/signup-form.tsx";
+import { authClient } from "@/lib/auth.ts";
 
 export const Route = createFileRoute("/(auth)/sign-up")({
   component: SignUpRoute,
+  beforeLoad: async () => {
+    const session = await authClient.getSession();
+    if (session.data) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
 });
 
 function SignUpRoute() {
