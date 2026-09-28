@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import * as React from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -14,18 +15,32 @@ import { AlertCircleIcon } from "lucide-react";
 
 const formSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
-    email: z.email("Invalid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    name: z.string().min(1, "Nazwa jest wymagana"),
+    email: z.email("Niepoprawny adres email"),
+    password: z.string().min(8, "Hasło musi mieć co najmniej 8 znaków"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: "Hasła nie są zgodne",
     path: ["confirmPassword"],
   });
 
+const placeholders = [
+  "xX_ToeCollector9000_Xx",
+  "UnpaidInternOfGod",
+  "MicrowaveWithOpinions",
+  "DefinitelyNotA_Ferret",
+  "GrandmaStoleMyRouter",
+  "CEOofEatingCrayons",
+  "SuspiciouslyWetSock",
+  "TaxEvadingPigeon",
+  "GregFromTheBasement",
+  "ERROR_UserHasNoBitches",
+];
+
 export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
-  const [error, setError] = React.useState<string | null>(null);
+  const [placeholder] = useState(() => placeholders[Math.floor(Math.random() * placeholders.length)]);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,8 +71,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create your account</CardTitle>
-          <CardDescription>Enter your email below to create your account</CardDescription>
+          <CardTitle className="text-xl">Utwórz swoje konto</CardTitle>
+          <CardDescription>Wprowadź swój adres email poniżej, aby utworzyć konto</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -73,12 +88,12 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="name">User Name</FieldLabel>
+                    <FieldLabel htmlFor="name">Nazwa użytkownika</FieldLabel>
                     <Input
                       {...field}
                       id="name"
                       aria-invalid={fieldState.invalid}
-                      placeholder="John Doe"
+                      placeholder={placeholder}
                       autoComplete="username"
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -108,7 +123,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldLabel htmlFor="password">Hasło</FieldLabel>
                     <Input
                       {...field}
                       id="password"
@@ -125,7 +140,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
+                    <FieldLabel htmlFor="confirm-password">Powtórz hasło</FieldLabel>
                     <Input
                       {...field}
                       id="confirm-password"
@@ -138,9 +153,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 )}
               />
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button type="submit">Utwórz konto</Button>
                 <FieldDescription className="text-center">
-                  Already have an account? <Link to="/sign-in">Sign in</Link>
+                  Masz już konto? <Link to="/sign-in">Zaloguj się</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -148,7 +163,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        Klikając przycisk "Kontynuuj", zgadzasz się na nasze <a href="#">Warunki korzystania z usługi</a> i{" "}
+        <a href="#">Politykę prywatności</a>.
       </FieldDescription>
     </div>
   );
