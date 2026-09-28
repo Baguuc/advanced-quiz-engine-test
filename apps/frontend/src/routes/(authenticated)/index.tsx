@@ -24,7 +24,7 @@ const surveys = [
   },
 ];
 
-export const Route = createFileRoute("/_mainLayout/")({
+export const Route = createFileRoute("/(authenticated)/")({
   component: Index,
 });
 

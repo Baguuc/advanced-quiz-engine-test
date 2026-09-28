@@ -155,7 +155,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               <Field>
                 <Button type="submit">Utwórz konto</Button>
                 <FieldDescription className="text-center">
-                  Masz już konto? <Link to="/sign-in">Zaloguj się</Link>
+                  Masz już konto?{" "}
+                  <Link to="/sign-in" search={(prev) => prev}>
+                    Zaloguj się
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

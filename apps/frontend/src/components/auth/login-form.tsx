@@ -42,7 +42,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </FieldSeparator>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Input id="email" type="email" placeholder="m@example.com" autoComplete="email" />
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -51,12 +51,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                     Zapomniane hasło?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" autoComplete="current-password" />
               </Field>
               <Field>
                 <Button type="submit">Zaloguj się</Button>
                 <FieldDescription className="text-center">
-                  Nie masz konta? <Link to="/sign-up">Zarejestruj się</Link>
+                  Nie masz konta?{" "}
+                  <Link to="/sign-up" search={(prev) => prev}>
+                    Zarejestruj się
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
