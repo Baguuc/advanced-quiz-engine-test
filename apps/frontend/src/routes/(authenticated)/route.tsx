@@ -1,5 +1,6 @@
-import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth.ts";
+import { NavMain } from "@/components/navbar/nav-main.tsx";
 
 export const Route = createFileRoute("/(authenticated)")({
   component: RouteComponent,
@@ -20,11 +21,7 @@ export const Route = createFileRoute("/(authenticated)")({
 function RouteComponent() {
   return (
     <div>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>
-      </div>
+      <NavMain />
       <Outlet />
     </div>
   );
