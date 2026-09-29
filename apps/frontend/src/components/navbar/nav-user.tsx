@@ -70,21 +70,21 @@ export const NavUser = () => {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <BadgeCheck />
-            Account
+            Konto
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard />
-            Billing
+            Płatności
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Bell />
-            Notifications
+            Powiadomienia
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut}>
           <LogOut />
-          Log out
+          Wyloguj
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
