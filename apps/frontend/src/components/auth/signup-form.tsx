@@ -75,12 +75,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
           <CardDescription>Wprowadź swój adres email poniżej, aby utworzyć konto</CardDescription>
         </CardHeader>
         <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-3">
-              <AlertCircleIcon />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
               <Controller
@@ -154,6 +148,12 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
               />
               <Field>
                 <Button type="submit">Utwórz konto</Button>
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircleIcon />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
                 <FieldDescription className="text-center">
                   Masz już konto?{" "}
                   <Link to="/sign-in" search={(prev) => prev}>
@@ -165,10 +165,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
           </form>
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        Klikając przycisk "Kontynuuj", zgadzasz się na nasze <a href="#">Warunki korzystania z usługi</a> i{" "}
-        <a href="#">Politykę prywatności</a>.
-      </FieldDescription>
     </div>
   );
 }
