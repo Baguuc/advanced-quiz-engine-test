@@ -23,7 +23,7 @@ export const auth = betterAuth({
     i18n({
       translations: {
         pl: locales.pl,
-      }
-    })
-  ]
+      },
+    }),
+  ],
 });
