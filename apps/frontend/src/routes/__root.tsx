@@ -1,8 +1,9 @@
-import { Outlet, createRootRoute, Link } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClientContext } from "@tanstack/react-query";
 import { queryClient } from "@/main.tsx";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { ThemeProvider } from "@/components/theme/theme-provider.tsx";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -11,16 +12,9 @@ export const Route = createRootRoute({
 function RootLayout() {
   return (
     <QueryClientContext value={queryClient}>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <Outlet />
+      </ThemeProvider>
       <TanStackRouterDevtools />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientContext>

@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PlusIcon } from "lucide-react";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
@@ -43,7 +44,14 @@ function FormCreator() {
   return (
     <Dialog>
       <form>
-        <DialogTrigger render={<Button variant="outline">Stwórz ankietę</Button>} />
+        <DialogTrigger
+          render={
+            <Button variant="outline" className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300" />
+          }
+        >
+          <PlusIcon />
+          Stwórz ankietę
+        </DialogTrigger>
         <DialogContent className="sm:max-w-full w-6/10">
           {page === "name" && (
             <>
