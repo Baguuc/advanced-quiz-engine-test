@@ -1,0 +1,1 @@
+# Przyszła dokumentacja

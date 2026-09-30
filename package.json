@@ -1,0 +1,27 @@
+{
+  "name": "advanced-quiz-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --parallel --filter backend --filter frontend dev",
+    "format": "prettier --write .",
+    "lint": "pnpm --sequential --filter backend --filter frontend lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.25.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.25.0",
+  "type": "module",
+  "devDependencies": {
+    "prettier": "3.9.6"
+  }
+}

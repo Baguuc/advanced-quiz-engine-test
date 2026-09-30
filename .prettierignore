@@ -1,0 +1,6 @@
+**/*
+!**/
+!**/src/**/*
+!**/package.json
+!**/*.ts
+routeTree.gen.ts
