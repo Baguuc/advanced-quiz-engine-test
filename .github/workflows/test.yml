@@ -51,7 +51,7 @@ jobs:
           DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
           BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
           BETTER_AUTH_URL: http://localhost:3000
-        run: npm run db:test:migrate
+        run: pnpm run db:test:migrate
 
       - name: Run tests
         env:
@@ -59,4 +59,4 @@ jobs:
           DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
           BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
           BETTER_AUTH_URL: http://localhost:3000
-        run: npm test
+        run: pnpm run test
