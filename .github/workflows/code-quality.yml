@@ -8,6 +8,7 @@ on:
 
 jobs:
   lint-and-format:
+    name: Check linting and formatting
     runs-on: ubuntu-latest
 
     steps:

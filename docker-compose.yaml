@@ -11,17 +11,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+      - ./postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dev -d quiz-engine"]
+      test: [ "CMD-SHELL", "pg_isready -U dev -d quiz-engine" ]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  adminer:
-    image: adminer
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
 
 volumes:
   postgres_data:
