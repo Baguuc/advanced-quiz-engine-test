@@ -13,6 +13,7 @@ export default defineConfig([
     languageOptions: {
       globals: { ...globals.node },
       parserOptions: {
+        project: ["./tsconfig.json"],
         projectService: true,
       },
     },

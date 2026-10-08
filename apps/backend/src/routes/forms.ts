@@ -3,11 +3,13 @@ import { z } from "zod";
 import { form, form_status, form_visibility, question, question_type, questionOption } from "../db/schema.ts";
 import { base, protectedProcedure } from "../lib/server.ts";
 
-export const listForms = base.handler(async () => {
+export const listForms = protectedProcedure.handler(async ({context}) => {
+  const userId = Number(context.session.user.id);
+
   return await db.query.form.findMany({
-    with: {
-      owner: true,
-    },
+    where: {
+      ownerId: userId,
+    }
   });
 });
 
