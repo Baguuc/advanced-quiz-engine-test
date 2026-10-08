@@ -131,6 +131,14 @@ export const createForm = protectedProcedure
       config: z.json()
     }))
   }))
+  .errors({
+    UNAUTHORIZED: {
+      message: "The owner was not found"
+    },
+    BAD_REQUEST: {
+      message: "Invalid form data"
+    }
+  })
   .handler(async ({ input, context }) => {
     await db.insert(form).values({
       ownerId: Number(context.session.user.id),
@@ -141,4 +149,4 @@ export const createForm = protectedProcedure
     // template:
     // <base url>/form/{id}
     return ""
-  });
+  })
