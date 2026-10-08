@@ -8,7 +8,7 @@ import { PlusIcon } from "lucide-react";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
-  const [questions, setQuestions] = useState([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+  const [questions, setQuestions] = useState([{id: 1, question: "Nowe Pytanie", options: [{"id": 1, "text": "Opcja 1"}, {"id": 2, "text": "Opcja 2"}] }]);
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -31,7 +31,7 @@ function FormCreator() {
         index === questionIndex
           ? {
               ...question,
-              options: question.options.map((option, index) => (index === optionIndex ? value : option)),
+              options: question.options.map((option, index) => (index === optionIndex ? { ...option, text: value } : option)),
             }
           : question,
       ),
@@ -39,13 +39,13 @@ function FormCreator() {
   };
 
   function addQuestion() {
-    setQuestions((prev) => [...prev, { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+    setQuestions((prev) => [...prev, { id: prev.length + 1, question: "Nowe Pytanie", options: [{"id": 1, "text": "Opcja 1"}, {"id": 2, "text": "Opcja 2"}] }]);
   }
 
   function addOption(questionIndex: number) {
     setQuestions((prev) =>
       prev.map((question, index) =>
-        index === questionIndex ? { ...question, options: [...question.options, "Nowa Opcja"] } : question,
+        index === questionIndex ? { ...question, options: [...question.options, { id: question.options.length + 1, text: "Nowa Opcja" }] } : question,
       ),
     );
   }
@@ -96,7 +96,7 @@ function FormCreator() {
 
                 <div className="scrollbar-auto max-h-[50vh] overflow-y-auto px-4 m-5 grid place-items-center">
                   {questions.map((question, questionIndex) => (
-                    <div key={questionIndex} className="mb-4 p-4 border rounded">
+                    <div key={question.id} className="mb-4 p-4 border rounded">
                       <Input
                         value={question.question}
                         onChange={(e) => updateQuestion(questionIndex, e.target.value)}
@@ -107,9 +107,9 @@ function FormCreator() {
                         Opcje:
                         <ul>
                           {question.options.map((option, optionIndex) => (
-                            <li key={optionIndex}>
+                            <li key={option.id}>
                               <Input
-                                value={option}
+                                value={option.text}
                                 onChange={(e) => {
                                   updateOption(questionIndex, optionIndex, e.target.value);
                                 }}
