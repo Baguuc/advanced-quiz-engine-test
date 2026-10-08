@@ -1,6 +1,6 @@
 import { db } from "../db/db.ts";
 import { z } from "zod";
-import { form } from "../db/schema.ts";
+import { form, form_status, form_visibility, question_type } from "../db/schema.ts";
 import { base, protectedProcedure } from "../lib/server.ts";
 
 export const listForms = base.handler(async () => {
@@ -114,10 +114,31 @@ export const getForm = protectedProcedure
   });
 
 export const createForm = protectedProcedure
-  .input(z.object({ title: z.string() }))
+  .input(z.object({ 
+    ownerId: z.number().int(),
+    title: z.string(),
+    description: z.string().optional(),
+    status: z.enum(form_status.enumValues).optional(),
+    visibility: z.enum(form_visibility.enumValues).optional(),
+    allowAnonymous: z.boolean().optional(),
+    allowMultipleResponses: z.boolean().optional(),
+    questions: z.array(z.object({
+      type: z.enum(question_type.enumValues),
+      title: z.string(),
+      description: z.string(),
+      position: z.number().int(),
+      required: z.boolean(),
+      config: z.json()
+    }))
+  }))
   .handler(async ({ input, context }) => {
     await db.insert(form).values({
       ownerId: Number(context.session.user.id),
       title: input.title,
     });
+
+    // zwraca link do formularza
+    // template:
+    // <base url>/form/{id}
+    return ""
   });
