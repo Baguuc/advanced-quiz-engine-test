@@ -1,0 +1,62 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+
+        env:
+          POSTGRES_USER: dev
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: quiz-engine-test
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd "pg_isready -U dev -d quiz-engine-test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run database migrations
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
+          BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
+          BETTER_AUTH_URL: http://localhost:3000
+        run: pnpm run db:test:migrate
+
+      - name: Run tests
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
+          BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
+          BETTER_AUTH_URL: http://localhost:3000
+        run: pnpm run test

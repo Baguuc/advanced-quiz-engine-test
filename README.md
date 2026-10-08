@@ -17,16 +17,18 @@ cd advanced-quiz-engine
 git checkout staging
 pnpm install
 docker compose up -d
-pnpm dev
+pnpm run db:migrate
+pnpm run dev
 ```
 
-### Docker compose db commands
+### Docker Compose db commands
 ```
 # Start
 docker compose up -d
 
 # Stop
 docker compose down
+
 # Stop AND delete the database data
 docker compose down -v
 
@@ -37,9 +39,11 @@ docker compose logs -f postgres
 docker exec -it quiz-engine-db psql -U dev -d quiz-engine
 ```
 
----
-## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+### Running tests
+```
+pnpm run db:test:migrate
+pnpm run test
+```
 
 ---
 ## Documentation
