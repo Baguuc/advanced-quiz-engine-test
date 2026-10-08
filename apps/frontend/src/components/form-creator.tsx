@@ -96,7 +96,7 @@ function FormCreator() {
 
                 <div className="scrollbar-auto max-h-[50vh] overflow-y-auto px-4 m-5 grid place-items-center">
                   {questions.map((question, questionIndex) => (
-                    <div key={question.question} className="mb-4 p-4 border rounded">
+                    <div key={questionIndex} className="mb-4 p-4 border rounded">
                       <Input
                         value={question.question}
                         onChange={(e) => updateQuestion(questionIndex, e.target.value)}
@@ -107,7 +107,7 @@ function FormCreator() {
                         Opcje:
                         <ul>
                           {question.options.map((option, optionIndex) => (
-                            <li key={option}>
+                            <li key={optionIndex}>
                               <Input
                                 value={option}
                                 onChange={(e) => {
