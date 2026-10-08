@@ -9,6 +9,15 @@ import { PlusIcon } from "lucide-react";
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
   const [questions, setQuestions] = useState([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+  const [open, setOpen] = useState(false);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+  if (!nextOpen) {
+    setPage("name");
+  }
+
+  setOpen(nextOpen)
+}
 
   const updateQuestion = (questionIndex: number, value: string) => {
     setQuestions((prev) =>
@@ -42,7 +51,7 @@ function FormCreator() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <form>
         <DialogTrigger
           render={
