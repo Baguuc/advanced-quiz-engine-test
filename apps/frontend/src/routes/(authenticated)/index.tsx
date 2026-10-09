@@ -30,32 +30,30 @@ export const Route = createFileRoute("/(authenticated)/")({
 
 function Index() {
   return (
-    <main className="min-h-[calc(100vh-65px)] bg-muted px-5 py-6 text-slate-950 sm:px-8 lg:px-14 lg:py-10">
-      <div className="flex flex-wrap items-stretch gap-6 justify-between">
-        {surveys.map((x) => (
-          <Card key={x.title} className="relative flex w-full max-w-sm flex-col pt-0">
-            <img
-              src={x.imageSrc}
-              alt="Event cover"
-              className="relative z-20 aspect-video w-full object-cover brightness-100"
-            />
-            <CardHeader>
-              <CardAction>
-                {x.isActive ? (
-                  <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Active</Badge>
-                ) : (
-                  <Badge variant="destructive">Inactive</Badge>
-                )}
-              </CardAction>
-              <CardTitle>{x.title}</CardTitle>
-              <CardDescription>{x.description}</CardDescription>
-            </CardHeader>
-            <CardFooter className="mt-auto">
-              <Button className="w-full">zobacz szczegóły ankiety</Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </main>
+    <div className="flex flex-wrap items-stretch gap-6 justify-between">
+      {surveys.map((x) => (
+        <Card key={x.title} className="relative flex w-full max-w-sm flex-col pt-0">
+          <img
+            src={x.imageSrc}
+            alt="Event cover"
+            className="relative z-20 aspect-video w-full object-cover brightness-100"
+          />
+          <CardHeader>
+            <CardAction>
+              {x.isActive ? (
+                <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Active</Badge>
+              ) : (
+                <Badge variant="destructive">Inactive</Badge>
+              )}
+            </CardAction>
+            <CardTitle>{x.title}</CardTitle>
+            <CardDescription>{x.description}</CardDescription>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+            <Button className="w-full">zobacz szczegóły ankiety</Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
   );
 }
