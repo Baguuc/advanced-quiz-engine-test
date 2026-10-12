@@ -153,7 +153,7 @@ export const createForm = protectedProcedure
       await db.insert(question).values({
         formId,
         type: currentQuestion.type,
-        title: currentQuestion.type,
+        title: currentQuestion.title,
         description: currentQuestion.description,
         position: currentQuestion.position,
         required: currentQuestion.required,
