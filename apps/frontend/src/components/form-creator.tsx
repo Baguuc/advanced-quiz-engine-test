@@ -5,6 +5,7 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusIcon } from "lucide-react";
+import { client } from "@/lib/client";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
@@ -20,6 +21,7 @@ function FormCreator() {
   ]);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState({ title: "", description: "" });
+  const [formUrl, setFormUrl] = useState("");
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
@@ -85,12 +87,27 @@ function FormCreator() {
     );
   }
 
-  function submitForm() {
-    console.log({
-      ...data,
-      questions
-    });
-  }
+  const submitForm = () => client.form.create({
+      title: "Customer survey",
+      description: "Feedback form",
+      questions: questions.map((question, idx) => {
+        return {
+          type: "single_choice",
+          position: idx,
+          required: true,
+          title: question.question,
+          description: "",
+          config: { options: question.options }
+        }
+      }),
+    })
+    .then((url) => setFormUrl(url))
+    .then(() => {
+      setPage("name");
+      setData({ title: "", description: "" });
+      setQuestions([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+    })
+    .then(() => setPage("create"));
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -192,7 +209,7 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("name")}>
                   Wróć do nazwy ankiety
                 </Button>
-                <Button onClick={() => setPage("create")}>Przejdź do finalizacji</Button>
+                <Button onClick={submitForm}>Stwórz ankietę</Button>
               </DialogFooter>
             </>
           )}
@@ -208,7 +225,7 @@ function FormCreator() {
                 <div className="mt-4 text-sm">
                   <h3> Link do ankiety:</h3>
                   <p className="mt-2 text-sm decoration-gray-500">
-                    https://musztardoweankiety/ankieta-67/fillout.ruskamafia.org
+                    {formUrl}
                   </p>
                 </div>
               </div>
@@ -217,7 +234,7 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("questions")}>
                   Wróć do pytań
                 </Button>
-                <Button type="submit" onClick={submitForm}>Stwórz ankietę</Button>
+                <Button type="submit" onClick={() => close()}>OK</Button>
               </DialogFooter>
             </>
           )}
