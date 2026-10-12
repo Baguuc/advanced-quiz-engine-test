@@ -131,9 +131,6 @@ export const createForm = protectedProcedure
     }))
   }))
   .errors({
-    UNAUTHORIZED: {
-      message: "The owner was not found"
-    },
     BAD_REQUEST: {
       message: "Invalid form data"
     }
@@ -147,5 +144,5 @@ export const createForm = protectedProcedure
     // zwraca link do formularza
     // template:
     // /form/{id}
-    return "" 
+    return ""
   })
