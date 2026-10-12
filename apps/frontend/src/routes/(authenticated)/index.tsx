@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { orpc } from "@/lib/client";
@@ -15,7 +15,7 @@ function Index() {
   return (
     <div className="flex flex-wrap items-stretch gap-6 justify-between">
       {forms.data?.map((x) => (
-        <Card key={x.title} className="relative flex w-full max-w-sm flex-col pt-0">
+        <Card key={x.id} className="relative flex w-full max-w-sm flex-col pt-0">
           <img
             src="https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg"
             alt="Event cover"
@@ -41,7 +41,12 @@ function Index() {
             <CardDescription>{x.description}</CardDescription>
           </CardHeader>
           <CardFooter className="mt-auto">
-            <Button className="w-full">zobacz szczegóły ankiety</Button>
+            <Button
+              className="w-full"
+              render={<Link to={"/form/$formId/details"} params={{ formId: x.id.toString() }} />}
+            >
+              Zobacz szczegóły ankiety
+            </Button>
           </CardFooter>
         </Card>
       ))}

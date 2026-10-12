@@ -1,5 +1,9 @@
 import { db } from "../db/db.ts";
+import { ORPCError } from "@orpc/server";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { answer, answerOption, form, response } from "../db/schema.ts";
+import { protectedProcedure } from "../lib/server.ts";
 import { form, form_status, form_visibility, question, question_type, questionOption } from "../db/schema.ts";
 import { base, protectedProcedure } from "../lib/server.ts";
 
@@ -112,6 +116,88 @@ export const getForm = protectedProcedure
     return {
       form,
       answers,
+    };
+  });
+
+export const getFormDetails = protectedProcedure
+  .input(z.object({ formId: z.number() }))
+  .handler(async ({ input, context }) => {
+    const userId = Number(context.session.user.id);
+
+    const selectedForm = await db.query.form.findFirst({
+      where: {
+        id: input.formId,
+        ownerId: userId,
+      },
+      with: {
+        questions: {
+          with: {
+            options: true,
+          },
+        },
+      },
+    });
+
+    if (!selectedForm) {
+      throw new ORPCError("NOT_FOUND", { message: "Form not found" });
+    }
+
+    const [responseStats] = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        completed: sql<number>`count(*) filter (where ${response.completed} = true)::int`,
+      })
+      .from(response)
+      .where(eq(response.formId, input.formId));
+
+    const optionStats = await db
+      .select({
+        optionId: answerOption.optionId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(answerOption)
+      .innerJoin(answer, eq(answerOption.answerId, answer.id))
+      .innerJoin(response, eq(answer.responseId, response.id))
+      .where(eq(response.formId, input.formId))
+      .groupBy(answerOption.optionId);
+
+    const questionStats = await db
+      .select({
+        questionId: answer.questionId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(answer)
+      .innerJoin(response, eq(answer.responseId, response.id))
+      .where(eq(response.formId, input.formId))
+      .groupBy(answer.questionId);
+
+    const optionCounts = new Map(
+      optionStats.map((stat) => [stat.optionId, stat.count]),
+    );
+    const questionCounts = new Map(
+      questionStats.map((stat) => [stat.questionId, stat.count]),
+    );
+    const totalResponses = responseStats?.total ?? 0;
+
+    return {
+      ...selectedForm,
+      responseStats: {
+        total: totalResponses,
+        completed: responseStats?.completed ?? 0,
+      },
+      questionResponseStats: selectedForm.questions.map((question) => ({
+        questionId: question.id,
+        answered: questionCounts.get(question.id) ?? 0,
+        options: question.options.map((option) => {
+          const count = optionCounts.get(option.id) ?? 0;
+
+          return {
+            optionId: option.id,
+            count,
+            percentage: totalResponses === 0 ? 0 : Math.round((count / totalResponses) * 100),
+          };
+        }),
+      })),
     };
   });
 
