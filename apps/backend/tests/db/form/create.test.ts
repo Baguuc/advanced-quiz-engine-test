@@ -30,7 +30,7 @@ describe("testing form creation", () => {
     assert(forms.length == 1);
   });
 
-  it("successfully creates a questions", async () => {
+  it("successfully creates questions", async () => {
     /* inicjalizuj testowego użytkownika */
     const data = generateRandomFormData();
     const sessionCookie = await createTestUser();
