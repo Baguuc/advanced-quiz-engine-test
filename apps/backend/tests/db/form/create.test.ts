@@ -1,20 +1,12 @@
 import { describe, it, expect, assert} from "vitest";
 import { call, ORPCError } from "@orpc/server";
-import { form } from "../../../src/db/schema.ts";
+import { form, question } from "../../../src/db/schema.ts";
 import { db } from "../../../src/db/db.ts";
 import { router } from "../../../src/routes/index.ts";
 import { createTestUser } from "../../lib/auth.ts";
 import { generateRandomFormData } from "../../lib/form.ts";
 import { faker } from "@faker-js/faker";
 import { randomInteger } from "../../lib/index.ts";
-/*
-### Edge case'y
-1. poprawnie tworzy ankiete
-2. zwraca poprawny url
-3. Niepoprawny question type
-4. Niepoprawny form visibility
-5. niepoprawny status
-*/
 
 describe("testing form creation", () => {
   it("successfully creates a form", async () => {
@@ -36,6 +28,27 @@ describe("testing form creation", () => {
 
     const forms = await db.select().from(form);
     assert(forms.length == 1);
+  });
+
+  it("successfully creates a questions", async () => {
+    /* inicjalizuj testowego użytkownika */
+    const data = generateRandomFormData();
+    const sessionCookie = await createTestUser();
+
+    await call(
+      router.form.create,
+      data,
+      {
+        context: {
+          reqHeaders: new Headers({
+            cookie: sessionCookie,
+          }),
+        },
+      }
+    );
+
+    const questions = await db.select().from(question);
+    assert(questions.length > 0);
   });
 
   it("returns form's url", async () => {
