@@ -141,6 +141,7 @@ export const createForm = protectedProcedure
       .values({
         ownerId: Number(context.session.user.id),
         title: input.title,
+        description: input.description,
         status: input.status,
         visibility: input.visibility,
         allowAnonymous: input.allowAnonymous,
