@@ -88,9 +88,8 @@ function FormCreator() {
   }
 
   const submitForm = () => client.form.create({
-      title: "Customer survey",
-      description: "Feedback form",
-      questions: questions.map((question, idx) => {
+      ...data,
+      questions: questions.map((question, idx) => { 
         return {
           type: "single_choice",
           position: idx,
@@ -102,12 +101,14 @@ function FormCreator() {
       }),
     })
     .then((url) => setFormUrl(url))
-    .then(() => {
-      setPage("name");
-      setData({ title: "", description: "" });
-      setQuestions([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
-    })
     .then(() => setPage("create"));
+
+  const closeModal = () => {
+    setPage("name");
+    setData({ title: "", description: "" });
+    setQuestions([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+    setOpen(false);
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -234,7 +235,9 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("questions")}>
                   Wróć do pytań
                 </Button>
-                <Button type="submit" onClick={() => close()}>OK</Button>
+                <Button type="submit" onClick={closeModal}>
+                  OK
+                </Button>
               </DialogFooter>
             </>
           )}
