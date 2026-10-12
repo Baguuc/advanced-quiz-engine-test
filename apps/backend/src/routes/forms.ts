@@ -114,8 +114,7 @@ export const getForm = protectedProcedure
   });
 
 export const createForm = protectedProcedure
-  .input(z.object({ 
-    ownerId: z.number().int(),
+  .input(z.object({
     title: z.string(),
     description: z.string().optional(),
     status: z.enum(form_status.enumValues).optional(),
