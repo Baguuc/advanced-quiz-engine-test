@@ -19,6 +19,7 @@ function FormCreator() {
     },
   ]);
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState({ title: "", description: "" });
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
@@ -84,6 +85,13 @@ function FormCreator() {
     );
   }
 
+  function submitForm() {
+    console.log({
+      ...data,
+      questions
+    });
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <form>
@@ -105,11 +113,11 @@ function FormCreator() {
               <FieldGroup>
                 <Field>
                   <Label htmlFor="formName">Podaj nazwę ankiety*</Label>
-                  <Input id="formName" placeholder="Nazwa ankiety" required />
+                  <Input value={data.title} onChange={(e) => setData({ ...data, title: e.target.value })} id="formName" placeholder="Nazwa ankiety" required />
                 </Field>
                 <Field>
                   <Label htmlFor="formDescription">Podaj opis ankiety</Label>
-                  <Input id="formDescription" placeholder="Opis ankiety" />
+                  <Input value={data.description} onChange={(e) => setData({ ...data, description: e.target.value })} id="formDescription" placeholder="Opis ankiety" />
                 </Field>
               </FieldGroup>
 
@@ -209,7 +217,7 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("questions")}>
                   Wróć do pytań
                 </Button>
-                <Button type="submit">Stwórz ankietę</Button>
+                <Button type="submit" onClick={submitForm}>Stwórz ankietę</Button>
               </DialogFooter>
             </>
           )}
