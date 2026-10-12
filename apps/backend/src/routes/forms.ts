@@ -146,6 +146,6 @@ export const createForm = protectedProcedure
 
     // zwraca link do formularza
     // template:
-    // <base url>/form/{id}
-    return ""
+    // /form/{id}
+    return "" 
   })
