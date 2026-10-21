@@ -114,26 +114,30 @@ export const getForm = protectedProcedure
   });
 
 export const createForm = protectedProcedure
-  .input(z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    status: z.enum(form_status.enumValues).optional(),
-    visibility: z.enum(form_visibility.enumValues).optional(),
-    allowAnonymous: z.boolean().optional(),
-    allowMultipleResponses: z.boolean().optional(),
-    questions: z.array(z.object({
-      type: z.enum(question_type.enumValues),
+  .input(
+    z.object({
       title: z.string(),
-      description: z.string(),
-      position: z.number().int(),
-      required: z.boolean(),
-      config: z.json()
-    }))
-  }))
+      description: z.string().optional(),
+      status: z.enum(form_status.enumValues).optional(),
+      visibility: z.enum(form_visibility.enumValues).optional(),
+      allowAnonymous: z.boolean().optional(),
+      allowMultipleResponses: z.boolean().optional(),
+      questions: z.array(
+        z.object({
+          type: z.enum(question_type.enumValues),
+          title: z.string(),
+          description: z.string(),
+          position: z.number().int(),
+          required: z.boolean(),
+          config: z.json(),
+        }),
+      ),
+    }),
+  )
   .errors({
     BAD_REQUEST: {
-      message: "Invalid form data"
-    }
+      message: "Invalid form data",
+    },
   })
   .handler(async ({ input, context }) => {
     const [{ id: formId }] = await db
@@ -145,11 +149,11 @@ export const createForm = protectedProcedure
         status: input.status,
         visibility: input.visibility,
         allowAnonymous: input.allowAnonymous,
-        allowMultipleResponses: input.allowMultipleResponses
+        allowMultipleResponses: input.allowMultipleResponses,
       })
       .returning({ id: form.id });
 
-    for(let currentQuestion of input.questions) {
+    for (const currentQuestion of input.questions) {
       await db.insert(question).values({
         formId,
         type: currentQuestion.type,
@@ -157,7 +161,7 @@ export const createForm = protectedProcedure
         description: currentQuestion.description,
         position: currentQuestion.position,
         required: currentQuestion.required,
-        config: currentQuestion.config
+        config: currentQuestion.config,
       });
     }
 
@@ -165,4 +169,4 @@ export const createForm = protectedProcedure
     // template:
     // /form/{id}
     return `/form/${formId}`;
-  })
+  });

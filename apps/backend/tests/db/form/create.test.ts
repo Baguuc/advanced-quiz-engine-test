@@ -1,4 +1,4 @@
-import { describe, it, expect, assert} from "vitest";
+import { describe, it, expect, assert } from "vitest";
 import { call, ORPCError } from "@orpc/server";
 import { form, question } from "../../../src/db/schema.ts";
 import { db } from "../../../src/db/db.ts";
@@ -14,17 +14,13 @@ describe("testing form creation", () => {
     const data = generateRandomFormData();
     const sessionCookie = await createTestUser();
 
-    await call(
-      router.form.create,
-      data,
-      {
-        context: {
-          reqHeaders: new Headers({
-            cookie: sessionCookie,
-          }),
-        },
-      }
-    );
+    await call(router.form.create, data, {
+      context: {
+        reqHeaders: new Headers({
+          cookie: sessionCookie,
+        }),
+      },
+    });
 
     const forms = await db.select().from(form);
     assert(forms.length == 1);
@@ -35,17 +31,13 @@ describe("testing form creation", () => {
     const data = generateRandomFormData();
     const sessionCookie = await createTestUser();
 
-    await call(
-      router.form.create,
-      data,
-      {
-        context: {
-          reqHeaders: new Headers({
-            cookie: sessionCookie,
-          }),
-        },
-      }
-    );
+    await call(router.form.create, data, {
+      context: {
+        reqHeaders: new Headers({
+          cookie: sessionCookie,
+        }),
+      },
+    });
 
     const questions = await db.select().from(question);
     assert(questions.length > 0);
@@ -56,19 +48,15 @@ describe("testing form creation", () => {
     const data = generateRandomFormData();
     const sessionCookie = await createTestUser();
 
-    const result = await call(
-      router.form.create,
-      data,
-      {
-        context: {
-          reqHeaders: new Headers({
-            cookie: sessionCookie,
-          }),
-        },
-      }
-    );
+    const result = await call(router.form.create, data, {
+      context: {
+        reqHeaders: new Headers({
+          cookie: sessionCookie,
+        }),
+      },
+    });
 
-    // sprawdź czy zwrócony url  
+    // sprawdź czy zwrócony url
     assert(result.startsWith("/"));
     const splitted = result.split("/");
     assert(splitted.length === 3);
@@ -80,21 +68,17 @@ describe("testing form creation", () => {
     /* inicjalizuj testowego użytkownika */
     const data = generateRandomFormData();
     // zamień typ jednego z pytań na losowy string (nie jest poprawny)
-    data.questions[randomInteger(0, data.questions.length-1)].type = faker.string.sample();
+    data.questions[randomInteger(0, data.questions.length - 1)].type = faker.string.sample();
     const sessionCookie = await createTestUser();
 
     try {
-      await call(
-        router.form.create,
-        data,
-        {
-          context: {
-            reqHeaders: new Headers({
-              cookie: sessionCookie,
-            }),
-          },
-        }
-      );
+      await call(router.form.create, data, {
+        context: {
+          reqHeaders: new Headers({
+            cookie: sessionCookie,
+          }),
+        },
+      });
 
       throw new Error("Expected the procedure to fail");
     } catch (error) {
@@ -110,17 +94,13 @@ describe("testing form creation", () => {
     const sessionCookie = await createTestUser();
 
     try {
-      await call(
-        router.form.create,
-        data,
-        {
-          context: {
-            reqHeaders: new Headers({
-              cookie: sessionCookie,
-            }),
-          },
-        }
-      );
+      await call(router.form.create, data, {
+        context: {
+          reqHeaders: new Headers({
+            cookie: sessionCookie,
+          }),
+        },
+      });
 
       throw new Error("Expected the procedure to fail");
     } catch (error) {
@@ -136,17 +116,13 @@ describe("testing form creation", () => {
     const sessionCookie = await createTestUser();
 
     try {
-      await call(
-        router.form.create,
-        data,
-        {
-          context: {
-            reqHeaders: new Headers({
-              cookie: sessionCookie,
-            }),
-          },
-        }
-      );
+      await call(router.form.create, data, {
+        context: {
+          reqHeaders: new Headers({
+            cookie: sessionCookie,
+          }),
+        },
+      });
 
       throw new Error("Expected the procedure to fail");
     } catch (error) {

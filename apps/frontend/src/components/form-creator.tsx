@@ -87,28 +87,38 @@ function FormCreator() {
     );
   }
 
-  const submitForm = () => client.form.create({
-      ...data,
-      questions: questions.map((question, idx) => { 
-        return {
-          type: "single_choice",
-          position: idx,
-          required: true,
-          title: question.question,
-          description: "",
-          config: { options: question.options }
-        }
-      }),
-    })
-    .then((url) => setFormUrl(url))
-    .then(() => setPage("create"));
+  const submitForm = () =>
+    client.form
+      .create({
+        ...data,
+        questions: questions.map((question, idx) => {
+          return {
+            type: "single_choice",
+            position: idx,
+            required: true,
+            title: question.question,
+            description: "",
+            config: { options: question.options },
+          };
+        }),
+      })
+      .then((url) => setFormUrl(url))
+      .then(() => setPage("create"));
 
   const closeModal = () => {
     setPage("name");
     setData({ title: "", description: "" });
-    setQuestions([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+    setQuestions([
+      {
+        question: "Nowe Pytanie",
+        options: [
+          { id: 0, text: "Opcja 1" },
+          { id: 1, text: "Opcja 2" },
+        ],
+      },
+    ]);
     setOpen(false);
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -131,11 +141,22 @@ function FormCreator() {
               <FieldGroup>
                 <Field>
                   <Label htmlFor="formName">Podaj nazwę ankiety*</Label>
-                  <Input value={data.title} onChange={(e) => setData({ ...data, title: e.target.value })} id="formName" placeholder="Nazwa ankiety" required />
+                  <Input
+                    value={data.title}
+                    onChange={(e) => setData({ ...data, title: e.target.value })}
+                    id="formName"
+                    placeholder="Nazwa ankiety"
+                    required
+                  />
                 </Field>
                 <Field>
                   <Label htmlFor="formDescription">Podaj opis ankiety</Label>
-                  <Input value={data.description} onChange={(e) => setData({ ...data, description: e.target.value })} id="formDescription" placeholder="Opis ankiety" />
+                  <Input
+                    value={data.description}
+                    onChange={(e) => setData({ ...data, description: e.target.value })}
+                    id="formDescription"
+                    placeholder="Opis ankiety"
+                  />
                 </Field>
               </FieldGroup>
 
@@ -225,9 +246,7 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj generowanie linku do ankiety.</h3>
                 <div className="mt-4 text-sm">
                   <h3> Link do ankiety:</h3>
-                  <p className="mt-2 text-sm decoration-gray-500">
-                    {formUrl}
-                  </p>
+                  <p className="mt-2 text-sm decoration-gray-500">{formUrl}</p>
                 </div>
               </div>
 

@@ -1,5 +1,5 @@
 const randomInteger = (min: number, max: number) => {
-    return Math.floor(Math.random() * max) + min;
-}
+  return Math.floor(Math.random() * max) + min;
+};
 
-export { randomInteger }
+export { randomInteger };
