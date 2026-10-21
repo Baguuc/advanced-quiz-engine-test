@@ -129,10 +129,12 @@ export const createForm = protectedProcedure
           description: z.string(),
           position: z.number().int(),
           required: z.boolean(),
-          options: z.array(z.object({
-            label: z.string(),
-            position: z.number()
-          })),
+          options: z.array(
+            z.object({
+              label: z.string(),
+              position: z.number(),
+            }),
+          ),
           config: z.json(),
         }),
       ),
@@ -146,35 +148,37 @@ export const createForm = protectedProcedure
   .handler(async ({ input, context }) => {
     const formId: number = await db.transaction(async (tx) => {
       const [{ id: formId }] = await tx
-      .insert(form)
-      .values({
-        ownerId: Number(context.session.user.id),
-        title: input.title,
-        description: input.description,
-        status: input.status,
-        visibility: input.visibility,
-        allowAnonymous: input.allowAnonymous,
-        allowMultipleResponses: input.allowMultipleResponses,
-      })
-      .returning({ id: form.id });
-    
-      for (const currentQuestion of input.questions) {
-        const [{ id: questionId }] = await tx.insert(question).values({
-          formId,
-          type: currentQuestion.type,
-          title: currentQuestion.title,
-          description: currentQuestion.description,
-          position: currentQuestion.position,
-          required: currentQuestion.required,
-          config: currentQuestion.config,
+        .insert(form)
+        .values({
+          ownerId: Number(context.session.user.id),
+          title: input.title,
+          description: input.description,
+          status: input.status,
+          visibility: input.visibility,
+          allowAnonymous: input.allowAnonymous,
+          allowMultipleResponses: input.allowMultipleResponses,
         })
-        .returning({ id: question.id });
+        .returning({ id: form.id });
 
-        for(const currentOption of currentQuestion.options) {
+      for (const currentQuestion of input.questions) {
+        const [{ id: questionId }] = await tx
+          .insert(question)
+          .values({
+            formId,
+            type: currentQuestion.type,
+            title: currentQuestion.title,
+            description: currentQuestion.description,
+            position: currentQuestion.position,
+            required: currentQuestion.required,
+            config: currentQuestion.config,
+          })
+          .returning({ id: question.id });
+
+        for (const currentOption of currentQuestion.options) {
           await tx.insert(questionOption).values({
             questionId,
             label: currentOption.label,
-            position: currentOption.position
+            position: currentOption.position,
           });
         }
       }

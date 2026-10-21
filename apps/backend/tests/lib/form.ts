@@ -7,10 +7,10 @@ const generateRandomFormData = () => {
   for (let i = 0; i < 5; i++) {
     const questionOptions = [];
 
-    for(let j = 0; j < 5; j++) {
+    for (let j = 0; j < 5; j++) {
       questionOptions.push({
         label: faker.string.sample(16),
-        position: j
+        position: j,
       });
     }
 
