@@ -1,6 +1,6 @@
 import { describe, it, expect, assert } from "vitest";
 import { call, ORPCError } from "@orpc/server";
-import { form, question } from "../../../src/db/schema.ts";
+import { form, question, questionOption } from "../../../src/db/schema.ts";
 import { db } from "../../../src/db/db.ts";
 import { router } from "../../../src/routes/index.ts";
 import { createTestUser } from "../../lib/auth.ts";
@@ -41,6 +41,9 @@ describe("testing form creation", () => {
 
     const questions = await db.select().from(question);
     assert(questions.length > 0);
+
+    const questionsOptions = await db.select().from(questionOption);
+    assert(questionsOptions.length > 0);
   });
 
   it("returns form's url", async () => {
@@ -64,7 +67,7 @@ describe("testing form creation", () => {
     assert(Number(splitted[2]));
   });
 
-  it("fails when any question has", async () => {
+  it("fails when any question has invalid type", async () => {
     /* inicjalizuj testowego użytkownika */
     const data = generateRandomFormData();
     // zamień typ jednego z pytań na losowy string (nie jest poprawny)

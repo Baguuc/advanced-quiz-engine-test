@@ -145,7 +145,6 @@ export const questionOption = pgTable(
       .references(() => question.id, { onDelete: "cascade" }),
     label: text("label").notNull(),
     position: integer("position").notNull(),
-    correct: boolean("correct").notNull(),
   },
   (t) => [unique().on(t.questionId, t.position)],
 );

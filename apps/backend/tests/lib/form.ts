@@ -5,12 +5,22 @@ import { randomInteger } from "./index.ts";
 const generateRandomFormData = () => {
   const questions = [];
   for (let i = 0; i < 5; i++) {
+    const questionOptions = [];
+
+    for(let j = 0; j < 5; j++) {
+      questionOptions.push({
+        label: faker.string.sample(16),
+        position: j
+      });
+    }
+
     questions.push({
       type: "single_choice" as any,
       title: faker.string.sample(16),
       description: faker.string.sample(64),
       position: i,
       required: faker.datatype.boolean(),
+      options: questionOptions,
       config: {},
     });
   }

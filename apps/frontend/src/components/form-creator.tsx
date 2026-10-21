@@ -98,7 +98,8 @@ function FormCreator() {
             required: true,
             title: question.question,
             description: "",
-            config: { options: question.options },
+            options: question.options.map((label, idx) => { return { label, position: idx }}),
+            config: {}
           };
         }),
       })

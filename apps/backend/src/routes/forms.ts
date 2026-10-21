@@ -1,6 +1,6 @@
 import { db } from "../db/db.ts";
 import { z } from "zod";
-import { form, form_status, form_visibility, question, question_type } from "../db/schema.ts";
+import { form, form_status, form_visibility, question, question_type, questionOption } from "../db/schema.ts";
 import { base, protectedProcedure } from "../lib/server.ts";
 
 export const listForms = base.handler(async () => {
@@ -129,6 +129,10 @@ export const createForm = protectedProcedure
           description: z.string(),
           position: z.number().int(),
           required: z.boolean(),
+          options: z.array(z.object({
+            label: z.string(),
+            position: z.number()
+          })),
           config: z.json(),
         }),
       ),
@@ -140,7 +144,8 @@ export const createForm = protectedProcedure
     },
   })
   .handler(async ({ input, context }) => {
-    const [{ id: formId }] = await db
+    const formId: number = await db.transaction(async (tx) => {
+      const [{ id: formId }] = await tx
       .insert(form)
       .values({
         ownerId: Number(context.session.user.id),
@@ -152,18 +157,30 @@ export const createForm = protectedProcedure
         allowMultipleResponses: input.allowMultipleResponses,
       })
       .returning({ id: form.id });
+    
+      for (const currentQuestion of input.questions) {
+        const [{ id: questionId }] = await tx.insert(question).values({
+          formId,
+          type: currentQuestion.type,
+          title: currentQuestion.title,
+          description: currentQuestion.description,
+          position: currentQuestion.position,
+          required: currentQuestion.required,
+          config: currentQuestion.config,
+        })
+        .returning({ id: question.id });
 
-    for (const currentQuestion of input.questions) {
-      await db.insert(question).values({
-        formId,
-        type: currentQuestion.type,
-        title: currentQuestion.title,
-        description: currentQuestion.description,
-        position: currentQuestion.position,
-        required: currentQuestion.required,
-        config: currentQuestion.config,
-      });
-    }
+        for(const currentOption of currentQuestion.options) {
+          await tx.insert(questionOption).values({
+            questionId,
+            label: currentOption.label,
+            position: currentOption.position
+          });
+        }
+      }
+
+      return formId;
+    });
 
     // zwraca link do formularza
     // template:
