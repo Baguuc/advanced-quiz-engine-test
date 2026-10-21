@@ -10,9 +10,7 @@ export const Route = createFileRoute("/(authenticated)/form_/$formId/details")({
 
 function RouteComponent() {
   const { formId } = Route.useParams();
-  const formQuery = useQuery(
-    orpc.form.get.queryOptions({ input: { formId } }),
-  );
+  const formQuery = useQuery(orpc.form.get.queryOptions({ input: { formId } }));
 
   if (formQuery.isPending) {
     return <main className="p-6">Ładowanie ankiety...</main>;
@@ -23,9 +21,8 @@ function RouteComponent() {
   }
 
   const form = formQuery.data;
-  const completionRate = form.responseStats.total === 0
-    ? 0
-    : Math.round((form.responseStats.completed / form.responseStats.total) * 100);
+  const completionRate =
+    form.responseStats.total === 0 ? 0 : Math.round((form.responseStats.completed / form.responseStats.total) * 100);
 
   return (
     <main className="min-h-[calc(100vh-65px)] bg-muted px-5 py-6 sm:px-8 lg:px-14 lg:py-10">
@@ -55,11 +52,13 @@ function RouteComponent() {
                   {question.position}. {question.title}
                 </CardTitle>
                 <CardDescription>
-                  {question.description ?? "Brak opisu"} | Typ: {question.type} | {question.required ? "Wymagane" : "Opcjonalne"}
+                  {question.description ?? "Brak opisu"} | Typ: {question.type} |{" "}
+                  {question.required ? "Wymagane" : "Opcjonalne"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0 text-sm text-muted-foreground">
-                Liczba odpowiedzi: {form.questionResponseStats.find((stats) => stats.questionId === question.id)?.answered ?? 0}
+                Liczba odpowiedzi:{" "}
+                {form.questionResponseStats.find((stats) => stats.questionId === question.id)?.answered ?? 0}
               </CardContent>
               {question.options.length > 0 && (
                 <CardContent>
@@ -74,13 +73,12 @@ function RouteComponent() {
                         <div key={option.id} className="space-y-1">
                           <div className="flex justify-between gap-4 text-sm">
                             <span>{option.label}</span>
-                            <span className="font-medium">{percentage}% ({optionStats?.count ?? 0})</span>
+                            <span className="font-medium">
+                              {percentage}% ({optionStats?.count ?? 0})
+                            </span>
                           </div>
                           <div className="h-2 overflow-hidden rounded-full bg-muted">
-                            <div
-                              className="h-full bg-primary transition-all"
-                              style={{ width: `${percentage}%` }}
-                            />
+                            <div className="h-full bg-primary transition-all" style={{ width: `${percentage}%` }} />
                           </div>
                         </div>
                       );

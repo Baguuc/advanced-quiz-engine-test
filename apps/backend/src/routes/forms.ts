@@ -7,13 +7,13 @@ import { protectedProcedure } from "../lib/server.ts";
 import { form, form_status, form_visibility, question, question_type, questionOption } from "../db/schema.ts";
 import { base, protectedProcedure } from "../lib/server.ts";
 
-export const listForms = protectedProcedure.handler(async ({context}) => {
+export const listForms = protectedProcedure.handler(async ({ context }) => {
   const userId = Number(context.session.user.id);
 
   return await db.query.form.findMany({
     where: {
       ownerId: userId,
-    }
+    },
   });
 });
 
@@ -171,12 +171,8 @@ export const getFormDetails = protectedProcedure
       .where(eq(response.formId, input.formId))
       .groupBy(answer.questionId);
 
-    const optionCounts = new Map(
-      optionStats.map((stat) => [stat.optionId, stat.count]),
-    );
-    const questionCounts = new Map(
-      questionStats.map((stat) => [stat.questionId, stat.count]),
-    );
+    const optionCounts = new Map(optionStats.map((stat) => [stat.optionId, stat.count]));
+    const questionCounts = new Map(questionStats.map((stat) => [stat.questionId, stat.count]));
     const totalResponses = responseStats?.total ?? 0;
 
     return {
