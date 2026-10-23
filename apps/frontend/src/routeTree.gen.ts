@@ -15,6 +15,7 @@ import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as authSignUpRouteImport } from './routes/(auth)/sign-up'
 import { Route as authenticatedIndexRouteImport } from './routes/(authenticated)/index'
 import { Route as authenticatedFormFormIdIndexRouteImport } from './routes/(authenticated)/form_/$formId/index'
+import { Route as authenticatedFormFormIdCompletedRouteImport } from './routes/(authenticated)/form_/$formId/completed'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -45,17 +46,25 @@ const authenticatedFormFormIdIndexRoute =
     path: '/form/$formId/',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const authenticatedFormFormIdCompletedRoute =
+  authenticatedFormFormIdCompletedRouteImport.update({
+    id: '/form_/$formId/completed',
+    path: '/form/$formId/completed',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
   '/': typeof authenticatedIndexRoute
+  '/form/$formId/completed': typeof authenticatedFormFormIdCompletedRoute
   '/form/$formId/': typeof authenticatedFormFormIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
   '/': typeof authenticatedIndexRoute
+  '/form/$formId/completed': typeof authenticatedFormFormIdCompletedRoute
   '/form/$formId': typeof authenticatedFormFormIdIndexRoute
 }
 export interface FileRoutesById {
@@ -65,13 +74,16 @@ export interface FileRoutesById {
   '/(auth)/sign-in': typeof authSignInRoute
   '/(auth)/sign-up': typeof authSignUpRoute
   '/(authenticated)/': typeof authenticatedIndexRoute
+  '/(authenticated)/form_/$formId/completed': typeof authenticatedFormFormIdCompletedRoute
   '/(authenticated)/form_/$formId/': typeof authenticatedFormFormIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/sign-in' | '/sign-up' | '/' | '/form/$formId/'
+  fullPaths:
+    '/sign-in' | '/sign-up' | '/' | '/form/$formId/completed' | '/form/$formId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/sign-in' | '/sign-up' | '/' | '/form/$formId'
+  to:
+    '/sign-in' | '/sign-up' | '/' | '/form/$formId/completed' | '/form/$formId'
   id:
     | '__root__'
     | '/(auth)'
@@ -79,6 +91,7 @@ export interface FileRouteTypes {
     | '/(auth)/sign-in'
     | '/(auth)/sign-up'
     | '/(authenticated)/'
+    | '/(authenticated)/form_/$formId/completed'
     | '/(authenticated)/form_/$formId/'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedFormFormIdIndexRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
+    '/(authenticated)/form_/$formId/completed': {
+      id: '/(authenticated)/form_/$formId/completed'
+      path: '/form/$formId/completed'
+      fullPath: '/form/$formId/completed'
+      preLoaderRoute: typeof authenticatedFormFormIdCompletedRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
   }
 }
 
@@ -150,11 +170,13 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 
 interface authenticatedRouteRouteChildren {
   authenticatedIndexRoute: typeof authenticatedIndexRoute
+  authenticatedFormFormIdCompletedRoute: typeof authenticatedFormFormIdCompletedRoute
   authenticatedFormFormIdIndexRoute: typeof authenticatedFormFormIdIndexRoute
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
   authenticatedIndexRoute: authenticatedIndexRoute,
+  authenticatedFormFormIdCompletedRoute: authenticatedFormFormIdCompletedRoute,
   authenticatedFormFormIdIndexRoute: authenticatedFormFormIdIndexRoute,
 }
 

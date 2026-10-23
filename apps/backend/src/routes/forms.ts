@@ -11,15 +11,16 @@ export const listForms = base.handler(async () => {
   });
 });
 
-export const getForm = base
+export const getForm = protectedProcedure
   .input(z.object({ formId: z.number() }))
   .errors({
     NOT_FOUND: {
       message: "Form not found",
     },
+    BAD_REQUEST: {},
   })
-  .handler(async ({ input, errors }) => {
-    const result = await db.query.form.findFirst({
+  .handler(async ({ input, errors, context }) => {
+    const form = await db.query.form.findFirst({
       columns: {
         allowAnonymous: false,
         allowMultipleResponses: false,
@@ -38,10 +39,16 @@ export const getForm = base
                 questionId: false,
                 correct: false,
               },
+              orderBy: {
+                position: "asc",
+              },
             },
           },
           columns: {
             formId: false,
+          },
+          orderBy: {
+            position: "asc",
           },
         },
         owner: {
@@ -55,11 +62,55 @@ export const getForm = base
       },
     });
 
-    if (!result) {
+    if (!form) {
       throw errors.NOT_FOUND();
     }
 
-    return result;
+    const response = await db.query.response.findFirst({
+      with: {
+        answers: {
+          with: {
+            answerOptions: true,
+          },
+        },
+      },
+      where: { formId: input.formId, userId: Number(context.session.user.id) },
+    });
+
+    if (response?.completed) {
+      throw errors.BAD_REQUEST({ message: "Odpowiedź została już przesłana" });
+    }
+
+    const answers: Record<
+      number,
+      | {
+          type: "single_choice";
+          option: number;
+        }
+      | { type: "multiple_choice"; options: number[] }
+    > = {};
+
+    if (response) {
+      response.answers.forEach((answer) => {
+        const question = form.questions.find((q) => q.id === answer.questionId);
+        if (question?.type === "multiple_choice") {
+          answers[answer.questionId] = {
+            type: "multiple_choice",
+            options: answer.answerOptions.map((option) => option.optionId),
+          };
+        } else {
+          answers[answer.questionId] = {
+            type: "single_choice",
+            option: answer.answerOptions[0].optionId,
+          };
+        }
+      });
+    }
+
+    return {
+      form,
+      answers,
+    };
   });
 
 export const createForm = protectedProcedure

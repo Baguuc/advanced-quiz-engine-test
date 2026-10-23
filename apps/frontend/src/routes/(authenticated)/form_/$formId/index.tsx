@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { client } from "@/lib/client.ts";
 import { safe } from "@orpc/client";
 import { SurveyPage } from "@/components/form/survey-page.tsx";
+import { router } from "@/main.tsx";
 
 export const Route = createFileRoute("/(authenticated)/form_/$formId/")({
   component: RouteComponent,
@@ -14,7 +15,12 @@ export const Route = createFileRoute("/(authenticated)/form_/$formId/")({
     const [error, data, definedError] = await safe(client.form.get({ formId: id }));
 
     if (definedError) {
-      throw notFound();
+      if (definedError.code === "BAD_REQUEST") {
+        await router.navigate({ to: "/form/$formId/completed", params: { formId: params.formId } });
+        throw Error();
+      } else {
+        throw notFound();
+      }
     } else if (error) {
       console.error(error);
       throw error;
@@ -27,5 +33,5 @@ export const Route = createFileRoute("/(authenticated)/form_/$formId/")({
 function RouteComponent() {
   const data = Route.useLoaderData();
 
-  return <SurveyPage form={data} />;
+  return <SurveyPage form={data.form} recordedAnswers={data.answers} />;
 }
