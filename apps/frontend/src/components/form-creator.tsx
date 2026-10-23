@@ -8,21 +8,39 @@ import { PlusIcon } from "lucide-react";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
-  const [questions, setQuestions] = useState([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+  const [questions, setQuestions] = useState([
+    {
+      id: 1,
+      question: "Nowe Pytanie",
+      options: [
+        { id: 1, text: "Opcja 1" },
+        { id: 2, text: "Opcja 2" },
+      ],
+    },
+  ]);
+  const [open, setOpen] = useState(false);
 
-  const updateQuestion = (questionIndex: number, value: string) => {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setPage("name");
+    }
+
+    setOpen(nextOpen);
+  };
+
+  const updateQuestion = (questionId: number, value: string) => {
     setQuestions((prev) =>
-      prev.map((question, index) => (index === questionIndex ? { ...question, question: value } : question)),
+      prev.map((question) => (question.id === questionId ? { ...question, question: value } : question)),
     );
   };
 
-  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
+  const updateOption = (questionId: number, optionId: number, value: string) => {
     setQuestions((prev) =>
-      prev.map((question, index) =>
-        index === questionIndex
+      prev.map((question) =>
+        question.id === questionId
           ? {
               ...question,
-              options: question.options.map((option, index) => (index === optionIndex ? value : option)),
+              options: question.options.map((option) => (option.id === optionId ? { ...option, text: value } : option)),
             }
           : question,
       ),
@@ -30,19 +48,44 @@ function FormCreator() {
   };
 
   function addQuestion() {
-    setQuestions((prev) => [...prev, { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+    setQuestions((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1, //To jest git?
+        question: "Nowe Pytanie",
+        options: [
+          { id: 1, text: "Opcja 1" },
+          { id: 2, text: "Opcja 2" },
+        ],
+      },
+    ]);
   }
 
-  function addOption(questionIndex: number) {
+  function addOption(questionId: number) {
     setQuestions((prev) =>
-      prev.map((question, index) =>
-        index === questionIndex ? { ...question, options: [...question.options, "Nowa Opcja"] } : question,
+      prev.map((question) =>
+        question.id === questionId
+          ? { ...question, options: [...question.options, { id: question.options.length + 1, text: "Nowa Opcja" }] }
+          : question,
+      ),
+    );
+  }
+
+  function deleteOption(questionId: number, optionId: number) {
+    setQuestions((prev) =>
+      prev.map((question) =>
+        question.id === questionId
+          ? {
+              ...question,
+              options: question.options.filter((option) => option.id !== optionId),
+            }
+          : question,
       ),
     );
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <form>
         <DialogTrigger
           render={
@@ -86,30 +129,41 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj dodawanie pytań do ankiety.</h3>
 
                 <div className="scrollbar-auto max-h-[50vh] overflow-y-auto px-4 m-5 grid place-items-center">
-                  {questions.map((question, questionIndex) => (
-                    <div key={question.question} className="mb-4 p-4 border rounded">
+                  {questions.map((question) => (
+                    <div key={question.id} className="mb-4 p-4 border rounded">
                       <Input
                         value={question.question}
-                        onChange={(e) => updateQuestion(questionIndex, e.target.value)}
+                        onChange={(e) => updateQuestion(question.id, e.target.value)}
                         className="mb-2"
                       />
 
-                      <div className="mb-2 text-sm m-3 font-semibold">
+                      <div className="mb-2 text-sm m-3 font-semibold  min-w-100">
                         Opcje:
                         <ul>
-                          {question.options.map((option, optionIndex) => (
-                            <li key={option}>
-                              <Input
-                                value={option}
-                                onChange={(e) => {
-                                  updateOption(questionIndex, optionIndex, e.target.value);
-                                }}
-                                className="mb-1"
-                              />
+                          {question.options.map((option) => (
+                            <li key={option.id}>
+                              <div className="flex items-center justify-content: center; gap-2 m-1">
+                                <Input
+                                  value={option.text}
+                                  onChange={(e) => {
+                                    updateOption(question.id, option.id, e.target.value);
+                                  }}
+                                  className="mb-1"
+                                />
+                                <Button
+                                  variant="outline"
+                                  className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1"
+                                  size="sm"
+                                  onClick={() => deleteOption(question.id, option.id)}
+                                >
+                                  {" "}
+                                  X{" "}
+                                </Button>
+                              </div>
                             </li>
                           ))}
                         </ul>
-                        <Button variant="secondary" onClick={() => addOption(questionIndex)}>
+                        <Button variant="secondary" onClick={() => addOption(question.id)}>
                           Dodaj Opcję
                         </Button>
                       </div>
@@ -119,7 +173,7 @@ function FormCreator() {
 
                 <Button
                   variant="outline"
-                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 w-50 h-10"
+                  className="mt-4 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 font-bold px-4 w-50 h-10"
                   onClick={addQuestion}
                 >
                   Dodaj Pytanie
