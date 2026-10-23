@@ -57,7 +57,7 @@ export const SurveyPage = ({ form, recordedAnswers }: SurveyPageProps) => {
     orpc.response.submit.mutationOptions({
       onSuccess: async () => {
         setSubmissionError(null);
-        await navigate({to: "/form/$formId/completed", params: {formId: form.id.toString()}});
+        await navigate({ to: "/form/$formId/completed", params: { formId: form.id.toString() } });
       },
       onError: (error) => {
         if (isDefinedError(error)) {

@@ -263,5 +263,5 @@ export const queryCompletionScreen = protectedProcedure
 
     return {
       title: userResponse.form.title,
-    }
+    };
   });
