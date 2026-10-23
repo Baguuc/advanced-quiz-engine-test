@@ -40,9 +40,7 @@ function FormCreator() {
         question.id === questionId
           ? {
               ...question,
-              options: question.options.map((option) =>
-                option.id === optionId ? { ...option, text: value } : option,
-              ),
+              options: question.options.map((option) => (option.id === optionId ? { ...option, text: value } : option)),
             }
           : question,
       ),
@@ -152,9 +150,16 @@ function FormCreator() {
                                   }}
                                   className="mb-1"
                                 />
-                                <Button variant="outline" className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1" size="sm" onClick={() => deleteOption(question.id, option.id)}> X </Button>
+                                <Button
+                                  variant="outline"
+                                  className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1"
+                                  size="sm"
+                                  onClick={() => deleteOption(question.id, option.id)}
+                                >
+                                  {" "}
+                                  X{" "}
+                                </Button>
                               </div>
-                              
                             </li>
                           ))}
                         </ul>
