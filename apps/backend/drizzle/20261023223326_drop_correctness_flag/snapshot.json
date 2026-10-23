@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "13b94153-4a61-4325-89bd-2badc51faa5d",
+  "id": "630c6a28-4faa-4706-975a-4bb5cb0f7d0f",
   "prevIds": [
-    "15a70567-2f08-4172-9337-2b9bd0e5e2db"
+    "ed47b8d7-3f19-409a-a477-2794844c9612"
   ],
   "ddl": [
     {
@@ -392,7 +392,7 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "data_value",
+      "name": "date_value",
       "entityType": "columns",
       "schema": "public",
       "table": "answer"
@@ -749,32 +749,6 @@
       "generated": null,
       "identity": null,
       "name": "config",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "question"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "question"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "updated_at",
       "entityType": "columns",
       "schema": "public",
       "table": "question"
@@ -1634,6 +1608,18 @@
       "entityType": "uniques",
       "schema": "public",
       "table": "question"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "question_id",
+        "position"
+      ],
+      "nullsNotDistinct": false,
+      "name": "question_option_question_id_position_unique",
+      "entityType": "uniques",
+      "schema": "public",
+      "table": "question_option"
     },
     {
       "nameExplicit": false,

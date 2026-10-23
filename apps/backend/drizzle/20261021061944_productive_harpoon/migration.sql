@@ -1,1 +1,0 @@
-ALTER TABLE "question_option" DROP COLUMN "value";
