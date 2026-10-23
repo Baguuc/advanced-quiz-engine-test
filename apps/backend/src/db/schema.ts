@@ -132,24 +132,23 @@ export const question = pgTable(
     position: integer("position").notNull(),
     required: boolean("required").notNull(),
     config: jsonb("config"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
   },
   (t) => [unique().on(t.formId, t.position)],
 );
 
-export const questionOption = pgTable("question_option", {
-  id: integer("id").generatedByDefaultAsIdentity().primaryKey(),
-  questionId: integer("question_id")
-    .notNull()
-    .references(() => question.id, { onDelete: "cascade" }),
-  label: text("label").notNull(),
-  value: text("value").notNull(),
-  position: integer("position").notNull(),
-});
+export const questionOption = pgTable(
+  "question_option",
+  {
+    id: integer("id").generatedByDefaultAsIdentity().primaryKey(),
+    questionId: integer("question_id")
+      .notNull()
+      .references(() => question.id, { onDelete: "cascade" }),
+    label: text("label").notNull(),
+    position: integer("position").notNull(),
+    correct: boolean("correct").notNull(),
+  },
+  (t) => [unique().on(t.questionId, t.position)],
+);
 
 export const response = pgTable("response", {
   id: integer("id").generatedByDefaultAsIdentity().primaryKey(),
@@ -174,7 +173,7 @@ export const answer = pgTable("answer", {
   textValue: text("text_value"),
   numberValue: integer("number_value"),
   booleanValue: boolean("boolean_value"),
-  dataValue: timestamp("data_value"),
+  dateValue: timestamp("date_value"),
 });
 
 export const answerOption = pgTable(
