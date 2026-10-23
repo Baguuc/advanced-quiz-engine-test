@@ -99,7 +99,7 @@ function FormCreator() {
             title: question.question,
             description: "",
             options: question.options.map((label, idx) => {
-              return { label, position: idx };
+              return { label: label.text, position: idx };
             }),
             config: {},
           };
@@ -113,6 +113,7 @@ function FormCreator() {
     setData({ title: "", description: "" });
     setQuestions([
       {
+        id: 0,
         question: "Nowe Pytanie",
         options: [
           { id: 0, text: "Opcja 1" },
