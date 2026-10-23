@@ -4,8 +4,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, ClipboardCopyIcon, PlusIcon } from "lucide-react";
 import { client } from "@/lib/client";
+import { useClipboard } from "@mantine/hooks";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
@@ -22,6 +23,8 @@ function FormCreator() {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState({ title: "", description: "" });
   const [formUrl, setFormUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+  const clipboard = useClipboard();
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
@@ -105,7 +108,7 @@ function FormCreator() {
           };
         }),
       })
-      .then((url) => setFormUrl(url))
+      .then((url) => setFormUrl(new URL(url, window.location.origin).href))
       .then(() => setPage("create"));
 
   const closeModal = () => {
@@ -122,6 +125,13 @@ function FormCreator() {
       },
     ]);
     setOpen(false);
+  };
+
+  const copyLink = () => {
+    clipboard.copy(formUrl);
+
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
@@ -250,7 +260,12 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj generowanie linku do ankiety.</h3>
                 <div className="mt-4 text-sm">
                   <h3> Link do ankiety:</h3>
-                  <p className="mt-2 text-sm decoration-gray-500">{formUrl}</p>
+                  <div className="mt-2 text-sm decoration-gray-500 bg-white/5 rounded-md p-2 flex items-center gap-2">
+                    {formUrl}
+                    <Button variant="outline" size="icon" onClick={copyLink}>
+                      {copied ? <CheckIcon /> : <ClipboardCopyIcon />}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
