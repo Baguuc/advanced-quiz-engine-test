@@ -159,7 +159,7 @@ export const createForm = protectedProcedure
           allowMultipleResponses: input.allowMultipleResponses,
         })
         .returning({ id: form.id });
-      
+
       const insertedQuestions = await tx
         .insert(question)
         .values(
@@ -177,10 +177,8 @@ export const createForm = protectedProcedure
           id: question.id,
           position: question.position,
         });
-      
-      const questionIdByPosition = new Map(
-        insertedQuestions.map((q) => [q.position, q.id]),
-      );
+
+      const questionIdByPosition = new Map(insertedQuestions.map((q) => [q.position, q.id]));
 
       const options = input.questions.flatMap((q) => {
         const questionId = questionIdByPosition.get(q.position);
