@@ -159,35 +159,49 @@ export const createForm = protectedProcedure
           allowMultipleResponses: input.allowMultipleResponses,
         })
         .returning({ id: form.id });
-
-      for (const currentQuestion of input.questions) {
-        const [{ id: questionId }] = await tx
-          .insert(question)
-          .values({
+      
+      const insertedQuestions = await tx
+        .insert(question)
+        .values(
+          input.questions.map((q) => ({
             formId,
-            type: currentQuestion.type,
-            title: currentQuestion.title,
-            description: currentQuestion.description,
-            position: currentQuestion.position,
-            required: currentQuestion.required,
-            config: currentQuestion.config,
-          })
-          .returning({ id: question.id });
+            type: q.type,
+            title: q.title,
+            description: q.description,
+            position: q.position,
+            required: q.required,
+            config: q.config,
+          })),
+        )
+        .returning({
+          id: question.id,
+          position: question.position,
+        });
+      
+      const questionIdByPosition = new Map(
+        insertedQuestions.map((q) => [q.position, q.id]),
+      );
 
-        for (const currentOption of currentQuestion.options) {
-          await tx.insert(questionOption).values({
-            questionId,
-            label: currentOption.label,
-            position: currentOption.position,
-          });
+      const options = input.questions.flatMap((q) => {
+        const questionId = questionIdByPosition.get(q.position);
+
+        if (questionId === undefined) {
+          throw new Error(`Question ID not found for position ${q.position}`);
         }
+
+        return q.options.map((option) => ({
+          questionId,
+          label: option.label,
+          position: option.position,
+        }));
+      });
+
+      if (options.length > 0) {
+        await tx.insert(questionOption).values(options);
       }
 
       return formId;
     });
 
-    // zwraca link do formularza
-    // template:
-    // /form/{id}
     return `/form/${formId}`;
   });
