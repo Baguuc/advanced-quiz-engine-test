@@ -38,7 +38,7 @@ function Index() {
               ) : null}
             </CardAction>
             <CardTitle>{x.title}</CardTitle>
-            <CardDescription>{x.description}</CardDescription>
+            <CardDescription className="col-span-2 line-clamp-3">{x.description}</CardDescription>
           </CardHeader>
           <CardFooter className="mt-auto">
             <Button
