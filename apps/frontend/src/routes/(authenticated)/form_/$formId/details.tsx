@@ -10,7 +10,7 @@ export const Route = createFileRoute("/(authenticated)/form_/$formId/details")({
 
 function RouteComponent() {
   const { formId } = Route.useParams();
-  const formQuery = useQuery(orpc.form.get.queryOptions({ input: { formId } }));
+  const formQuery = useQuery(orpc.form.getDetails.queryOptions({ input: { formId: Number(formId) } }));
 
   if (formQuery.isPending) {
     return <main className="p-6">Ładowanie ankiety...</main>;
