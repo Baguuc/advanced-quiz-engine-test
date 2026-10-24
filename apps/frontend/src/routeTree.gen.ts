@@ -16,6 +16,7 @@ import { Route as authSignUpRouteImport } from './routes/(auth)/sign-up'
 import { Route as authenticatedIndexRouteImport } from './routes/(authenticated)/index'
 import { Route as authenticatedFormFormIdIndexRouteImport } from './routes/(authenticated)/form_/$formId/index'
 import { Route as authenticatedFormFormIdCompletedRouteImport } from './routes/(authenticated)/form_/$formId/completed'
+import { Route as authenticatedFormFormIdDetailsRouteImport } from './routes/(authenticated)/form_/$formId/details'
 
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
@@ -52,12 +53,19 @@ const authenticatedFormFormIdCompletedRoute =
     path: '/form/$formId/completed',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const authenticatedFormFormIdDetailsRoute =
+  authenticatedFormFormIdDetailsRouteImport.update({
+    id: '/form_/$formId/details',
+    path: '/form/$formId/details',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
   '/': typeof authenticatedIndexRoute
   '/form/$formId/completed': typeof authenticatedFormFormIdCompletedRoute
+  '/form/$formId/details': typeof authenticatedFormFormIdDetailsRoute
   '/form/$formId/': typeof authenticatedFormFormIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -65,6 +73,7 @@ export interface FileRoutesByTo {
   '/sign-up': typeof authSignUpRoute
   '/': typeof authenticatedIndexRoute
   '/form/$formId/completed': typeof authenticatedFormFormIdCompletedRoute
+  '/form/$formId/details': typeof authenticatedFormFormIdDetailsRoute
   '/form/$formId': typeof authenticatedFormFormIdIndexRoute
 }
 export interface FileRoutesById {
@@ -75,15 +84,26 @@ export interface FileRoutesById {
   '/(auth)/sign-up': typeof authSignUpRoute
   '/(authenticated)/': typeof authenticatedIndexRoute
   '/(authenticated)/form_/$formId/completed': typeof authenticatedFormFormIdCompletedRoute
+  '/(authenticated)/form_/$formId/details': typeof authenticatedFormFormIdDetailsRoute
   '/(authenticated)/form_/$formId/': typeof authenticatedFormFormIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/sign-in' | '/sign-up' | '/' | '/form/$formId/completed' | '/form/$formId/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/form/$formId/completed'
+    | '/form/$formId/details'
+    | '/form/$formId/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/sign-in' | '/sign-up' | '/' | '/form/$formId/completed' | '/form/$formId'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/form/$formId/completed'
+    | '/form/$formId/details'
+    | '/form/$formId'
   id:
     | '__root__'
     | '/(auth)'
@@ -92,6 +112,7 @@ export interface FileRouteTypes {
     | '/(auth)/sign-up'
     | '/(authenticated)/'
     | '/(authenticated)/form_/$formId/completed'
+    | '/(authenticated)/form_/$formId/details'
     | '/(authenticated)/form_/$formId/'
   fileRoutesById: FileRoutesById
 }
@@ -151,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedFormFormIdCompletedRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
+    '/(authenticated)/form_/$formId/details': {
+      id: '/(authenticated)/form_/$formId/details'
+      path: '/form/$formId/details'
+      fullPath: '/form/$formId/details'
+      preLoaderRoute: typeof authenticatedFormFormIdDetailsRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
   }
 }
 
@@ -171,12 +199,14 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 interface authenticatedRouteRouteChildren {
   authenticatedIndexRoute: typeof authenticatedIndexRoute
   authenticatedFormFormIdCompletedRoute: typeof authenticatedFormFormIdCompletedRoute
+  authenticatedFormFormIdDetailsRoute: typeof authenticatedFormFormIdDetailsRoute
   authenticatedFormFormIdIndexRoute: typeof authenticatedFormFormIdIndexRoute
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
   authenticatedIndexRoute: authenticatedIndexRoute,
   authenticatedFormFormIdCompletedRoute: authenticatedFormFormIdCompletedRoute,
+  authenticatedFormFormIdDetailsRoute: authenticatedFormFormIdDetailsRoute,
   authenticatedFormFormIdIndexRoute: authenticatedFormFormIdIndexRoute,
 }
 
