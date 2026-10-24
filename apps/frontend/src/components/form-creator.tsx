@@ -4,7 +4,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, ClipboardCopyIcon, PlusIcon } from "lucide-react";
+import { client } from "@/lib/client";
+import { useClipboard } from "@mantine/hooks";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
@@ -19,6 +21,10 @@ function FormCreator() {
     },
   ]);
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState({ title: "", description: "" });
+  const [formUrl, setFormUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+  const clipboard = useClipboard();
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
@@ -84,6 +90,50 @@ function FormCreator() {
     );
   }
 
+  const submitForm = () =>
+    client.form
+      .create({
+        ...data,
+        questions: questions.map((question, idx) => {
+          return {
+            type: "single_choice",
+            position: idx,
+            required: true,
+            title: question.question,
+            description: "",
+            options: question.options.map((label, idx) => {
+              return { label: label.text, position: idx };
+            }),
+            config: {},
+          };
+        }),
+      })
+      .then((url) => setFormUrl(new URL(url, window.location.origin).href))
+      .then(() => setPage("create"));
+
+  const closeModal = () => {
+    setPage("name");
+    setData({ title: "", description: "" });
+    setQuestions([
+      {
+        id: 0,
+        question: "Nowe Pytanie",
+        options: [
+          { id: 0, text: "Opcja 1" },
+          { id: 1, text: "Opcja 2" },
+        ],
+      },
+    ]);
+    setOpen(false);
+  };
+
+  const copyLink = () => {
+    clipboard.copy(formUrl);
+
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <form>
@@ -105,11 +155,22 @@ function FormCreator() {
               <FieldGroup>
                 <Field>
                   <Label htmlFor="formName">Podaj nazwę ankiety*</Label>
-                  <Input id="formName" placeholder="Nazwa ankiety" required />
+                  <Input
+                    value={data.title}
+                    onChange={(e) => setData({ ...data, title: e.target.value })}
+                    id="formName"
+                    placeholder="Nazwa ankiety"
+                    required
+                  />
                 </Field>
                 <Field>
                   <Label htmlFor="formDescription">Podaj opis ankiety</Label>
-                  <Input id="formDescription" placeholder="Opis ankiety" />
+                  <Input
+                    value={data.description}
+                    onChange={(e) => setData({ ...data, description: e.target.value })}
+                    id="formDescription"
+                    placeholder="Opis ankiety"
+                  />
                 </Field>
               </FieldGroup>
 
@@ -184,7 +245,7 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("name")}>
                   Wróć do nazwy ankiety
                 </Button>
-                <Button onClick={() => setPage("create")}>Przejdź do finalizacji</Button>
+                <Button onClick={submitForm}>Stwórz ankietę</Button>
               </DialogFooter>
             </>
           )}
@@ -199,9 +260,12 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj generowanie linku do ankiety.</h3>
                 <div className="mt-4 text-sm">
                   <h3> Link do ankiety:</h3>
-                  <p className="mt-2 text-sm decoration-gray-500">
-                    https://musztardoweankiety/ankieta-67/fillout.ruskamafia.org
-                  </p>
+                  <div className="mt-2 text-sm decoration-gray-500 bg-white/5 rounded-md p-2 flex items-center gap-2">
+                    {formUrl}
+                    <Button variant="outline" size="icon" onClick={copyLink}>
+                      {copied ? <CheckIcon /> : <ClipboardCopyIcon />}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -209,7 +273,9 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("questions")}>
                   Wróć do pytań
                 </Button>
-                <Button type="submit">Stwórz ankietę</Button>
+                <Button type="submit" onClick={closeModal}>
+                  OK
+                </Button>
               </DialogFooter>
             </>
           )}

@@ -1,6 +1,6 @@
 import { db } from "../db/db.ts";
 import { z } from "zod";
-import { form } from "../db/schema.ts";
+import { form, form_status, form_visibility, question, question_type, questionOption } from "../db/schema.ts";
 import { base, protectedProcedure } from "../lib/server.ts";
 
 export const listForms = base.handler(async () => {
@@ -114,10 +114,92 @@ export const getForm = protectedProcedure
   });
 
 export const createForm = protectedProcedure
-  .input(z.object({ title: z.string() }))
+  .input(
+    z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      status: z.enum(form_status.enumValues).optional(),
+      visibility: z.enum(form_visibility.enumValues).optional(),
+      allowAnonymous: z.boolean().optional(),
+      allowMultipleResponses: z.boolean().optional(),
+      questions: z.array(
+        z.object({
+          type: z.enum(question_type.enumValues),
+          title: z.string(),
+          description: z.string(),
+          position: z.number().int(),
+          required: z.boolean(),
+          options: z.array(
+            z.object({
+              label: z.string(),
+              position: z.number(),
+            }),
+          ),
+          config: z.json(),
+        }),
+      ),
+    }),
+  )
+  .errors({
+    BAD_REQUEST: {
+      message: "Invalid form data",
+    },
+  })
   .handler(async ({ input, context }) => {
-    await db.insert(form).values({
-      ownerId: Number(context.session.user.id),
-      title: input.title,
+    const formId: number = await db.transaction(async (tx) => {
+      const [{ id: formId }] = await tx
+        .insert(form)
+        .values({
+          ownerId: Number(context.session.user.id),
+          title: input.title,
+          description: input.description,
+          status: input.status,
+          visibility: input.visibility,
+          allowAnonymous: input.allowAnonymous,
+          allowMultipleResponses: input.allowMultipleResponses,
+        })
+        .returning({ id: form.id });
+
+      const insertedQuestions = await tx
+        .insert(question)
+        .values(
+          input.questions.map((q) => ({
+            formId,
+            type: q.type,
+            title: q.title,
+            description: q.description,
+            position: q.position,
+            required: q.required,
+            config: q.config,
+          })),
+        )
+        .returning({
+          id: question.id,
+          position: question.position,
+        });
+
+      const questionIdByPosition = new Map(insertedQuestions.map((q) => [q.position, q.id]));
+
+      const options = input.questions.flatMap((q) => {
+        const questionId = questionIdByPosition.get(q.position);
+
+        if (questionId === undefined) {
+          throw new Error(`Question ID not found for position ${q.position}`);
+        }
+
+        return q.options.map((option) => ({
+          questionId,
+          label: option.label,
+          position: option.position,
+        }));
+      });
+
+      if (options.length > 0) {
+        await tx.insert(questionOption).values(options);
+      }
+
+      return formId;
     });
+
+    return `/form/${formId}`;
   });
