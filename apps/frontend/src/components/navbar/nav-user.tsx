@@ -68,9 +68,9 @@ export const NavUser = () => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem render={<Link to="/account" />}>
             <BadgeCheck />
-            <Link to="/account">Konto</Link>
+            Konto
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard />
