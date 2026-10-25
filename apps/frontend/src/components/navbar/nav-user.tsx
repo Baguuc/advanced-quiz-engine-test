@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { authClient } from "@/lib/auth.ts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
 import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export const NavUser = () => {
   const session = authClient.useSession();
@@ -70,7 +70,7 @@ export const NavUser = () => {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <BadgeCheck />
-            Konto
+            <Link to="/account">Konto</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CreditCard />
