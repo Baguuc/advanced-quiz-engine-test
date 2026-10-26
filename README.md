@@ -1,50 +1,14 @@
 # advanced-quiz-engine
 
-Ale syf :D
-
 ---
-## Development
-### Prerequisites
-- Docker
-- Docker Compose
-- Node.js
-- Pnpm
+## Dokumentacja
 
-### Start
-```
-git clone https://github.com/Vtraxio/advanced-quiz-engine.git
-cd advanced-quiz-engine
-git checkout staging
-pnpm install
-docker compose up -d
-pnpm run db:migrate
-pnpm run dev
-```
+Spis całej dostępnej dokumentacji, podzielona na kategorie.
+Jeśli pierwszy raz pracujesz z projektem, zacznij od [przeczytania wymagań systemowych](docs/dev/prerequisites.md).
 
-### Docker Compose db commands
-```
-# Start
-docker compose up -d
-
-# Stop
-docker compose down
-
-# Stop AND delete the database data
-docker compose down -v
-
-# See Postgres logs
-docker compose logs -f postgres
-
-# Open psql inside the container
-docker exec -it quiz-engine-db psql -U dev -d quiz-engine
-```
-
-### Running tests
-```
-pnpm run db:test:migrate
-pnpm run test
-```
-
----
-## Documentation
-See [docs/index.md](docs/index.md)
+* Development
+  1. [Wymagania systemowe](docs/dev/prerequisites.md)
+  2. [Przygotowywanie projektu](docs/dev/project-setup.md)
+  3. [Zmienne środowiskowe](docs/dev/environment.md)
+  4. [Komendy docker compose](docs/dev/docker.md)
+  5. [Testowanie](docs/dev/testing.md)

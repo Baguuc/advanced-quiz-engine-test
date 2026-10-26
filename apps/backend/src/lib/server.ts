@@ -7,7 +7,6 @@ type ServerContext = RequestHeadersHandlerPluginContext;
 export const base = os.$context<ServerContext>();
 
 const requireSession = base.middleware(async ({ context, next }) => {
-  console.log(context.reqHeaders);
   const session = await auth.api.getSession({
     headers: context.reqHeaders ?? new Headers(),
   });

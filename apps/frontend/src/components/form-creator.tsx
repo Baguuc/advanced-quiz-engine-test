@@ -4,25 +4,49 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, ClipboardCopyIcon, PlusIcon } from "lucide-react";
+import { client } from "@/lib/client";
+import { useClipboard } from "@mantine/hooks";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
-  const [questions, setQuestions] = useState([{ question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+  const [questions, setQuestions] = useState([
+    {
+      id: 1,
+      question: "Nowe Pytanie",
+      options: [
+        { id: 1, text: "Opcja 1" },
+        { id: 2, text: "Opcja 2" },
+      ],
+    },
+  ]);
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState({ title: "", description: "" });
+  const [formUrl, setFormUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+  const clipboard = useClipboard();
 
-  const updateQuestion = (questionIndex: number, value: string) => {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setPage("name");
+    }
+
+    setOpen(nextOpen);
+  };
+
+  const updateQuestion = (questionId: number, value: string) => {
     setQuestions((prev) =>
-      prev.map((question, index) => (index === questionIndex ? { ...question, question: value } : question)),
+      prev.map((question) => (question.id === questionId ? { ...question, question: value } : question)),
     );
   };
 
-  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
+  const updateOption = (questionId: number, optionId: number, value: string) => {
     setQuestions((prev) =>
-      prev.map((question, index) =>
-        index === questionIndex
+      prev.map((question) =>
+        question.id === questionId
           ? {
               ...question,
-              options: question.options.map((option, index) => (index === optionIndex ? value : option)),
+              options: question.options.map((option) => (option.id === optionId ? { ...option, text: value } : option)),
             }
           : question,
       ),
@@ -30,19 +54,88 @@ function FormCreator() {
   };
 
   function addQuestion() {
-    setQuestions((prev) => [...prev, { question: "Nowe Pytanie", options: ["Opcja 1", "Opcja 2"] }]);
+    setQuestions((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1, //To jest git?
+        question: "Nowe Pytanie",
+        options: [
+          { id: 1, text: "Opcja 1" },
+          { id: 2, text: "Opcja 2" },
+        ],
+      },
+    ]);
   }
 
-  function addOption(questionIndex: number) {
+  function addOption(questionId: number) {
     setQuestions((prev) =>
-      prev.map((question, index) =>
-        index === questionIndex ? { ...question, options: [...question.options, "Nowa Opcja"] } : question,
+      prev.map((question) =>
+        question.id === questionId
+          ? { ...question, options: [...question.options, { id: question.options.length + 1, text: "Nowa Opcja" }] }
+          : question,
       ),
     );
   }
 
+  function deleteOption(questionId: number, optionId: number) {
+    setQuestions((prev) =>
+      prev.map((question) =>
+        question.id === questionId
+          ? {
+              ...question,
+              options: question.options.filter((option) => option.id !== optionId),
+            }
+          : question,
+      ),
+    );
+  }
+
+  const submitForm = () =>
+    client.form
+      .create({
+        ...data,
+        questions: questions.map((question, idx) => {
+          return {
+            type: "single_choice",
+            position: idx,
+            required: true,
+            title: question.question,
+            description: "",
+            options: question.options.map((label, idx) => {
+              return { label: label.text, position: idx };
+            }),
+            config: {},
+          };
+        }),
+      })
+      .then((url) => setFormUrl(new URL(url, window.location.origin).href))
+      .then(() => setPage("create"));
+
+  const closeModal = () => {
+    setPage("name");
+    setData({ title: "", description: "" });
+    setQuestions([
+      {
+        id: 0,
+        question: "Nowe Pytanie",
+        options: [
+          { id: 0, text: "Opcja 1" },
+          { id: 1, text: "Opcja 2" },
+        ],
+      },
+    ]);
+    setOpen(false);
+  };
+
+  const copyLink = () => {
+    clipboard.copy(formUrl);
+
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <form>
         <DialogTrigger
           render={
@@ -62,11 +155,22 @@ function FormCreator() {
               <FieldGroup>
                 <Field>
                   <Label htmlFor="formName">Podaj nazwę ankiety*</Label>
-                  <Input id="formName" placeholder="Nazwa ankiety" required />
+                  <Input
+                    value={data.title}
+                    onChange={(e) => setData({ ...data, title: e.target.value })}
+                    id="formName"
+                    placeholder="Nazwa ankiety"
+                    required
+                  />
                 </Field>
                 <Field>
                   <Label htmlFor="formDescription">Podaj opis ankiety</Label>
-                  <Input id="formDescription" placeholder="Opis ankiety" />
+                  <Input
+                    value={data.description}
+                    onChange={(e) => setData({ ...data, description: e.target.value })}
+                    id="formDescription"
+                    placeholder="Opis ankiety"
+                  />
                 </Field>
               </FieldGroup>
 
@@ -86,30 +190,41 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj dodawanie pytań do ankiety.</h3>
 
                 <div className="scrollbar-auto max-h-[50vh] overflow-y-auto px-4 m-5 grid place-items-center">
-                  {questions.map((question, questionIndex) => (
-                    <div key={question.question} className="mb-4 p-4 border rounded">
+                  {questions.map((question) => (
+                    <div key={question.id} className="mb-4 p-4 border rounded">
                       <Input
                         value={question.question}
-                        onChange={(e) => updateQuestion(questionIndex, e.target.value)}
+                        onChange={(e) => updateQuestion(question.id, e.target.value)}
                         className="mb-2"
                       />
 
-                      <div className="mb-2 text-sm m-3 font-semibold">
+                      <div className="mb-2 text-sm m-3 font-semibold  min-w-100">
                         Opcje:
                         <ul>
-                          {question.options.map((option, optionIndex) => (
-                            <li key={option}>
-                              <Input
-                                value={option}
-                                onChange={(e) => {
-                                  updateOption(questionIndex, optionIndex, e.target.value);
-                                }}
-                                className="mb-1"
-                              />
+                          {question.options.map((option) => (
+                            <li key={option.id}>
+                              <div className="flex items-center justify-content: center; gap-2 m-1">
+                                <Input
+                                  value={option.text}
+                                  onChange={(e) => {
+                                    updateOption(question.id, option.id, e.target.value);
+                                  }}
+                                  className="mb-1"
+                                />
+                                <Button
+                                  variant="outline"
+                                  className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1"
+                                  size="sm"
+                                  onClick={() => deleteOption(question.id, option.id)}
+                                >
+                                  {" "}
+                                  X{" "}
+                                </Button>
+                              </div>
                             </li>
                           ))}
                         </ul>
-                        <Button variant="secondary" onClick={() => addOption(questionIndex)}>
+                        <Button variant="secondary" onClick={() => addOption(question.id)}>
                           Dodaj Opcję
                         </Button>
                       </div>
@@ -119,7 +234,7 @@ function FormCreator() {
 
                 <Button
                   variant="outline"
-                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 w-50 h-10"
+                  className="mt-4 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 font-bold px-4 w-50 h-10"
                   onClick={addQuestion}
                 >
                   Dodaj Pytanie
@@ -130,7 +245,7 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("name")}>
                   Wróć do nazwy ankiety
                 </Button>
-                <Button onClick={() => setPage("create")}>Przejdź do finalizacji</Button>
+                <Button onClick={submitForm}>Stwórz ankietę</Button>
               </DialogFooter>
             </>
           )}
@@ -145,9 +260,12 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj generowanie linku do ankiety.</h3>
                 <div className="mt-4 text-sm">
                   <h3> Link do ankiety:</h3>
-                  <p className="mt-2 text-sm decoration-gray-500">
-                    https://musztardoweankiety/ankieta-67/fillout.ruskamafia.org
-                  </p>
+                  <div className="mt-2 text-sm decoration-gray-500 bg-white/5 rounded-md p-2 flex items-center gap-2">
+                    {formUrl}
+                    <Button variant="outline" size="icon" onClick={copyLink}>
+                      {copied ? <CheckIcon /> : <ClipboardCopyIcon />}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -155,7 +273,9 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("questions")}>
                   Wróć do pytań
                 </Button>
-                <Button type="submit">Stwórz ankietę</Button>
+                <Button type="submit" onClick={closeModal}>
+                  OK
+                </Button>
               </DialogFooter>
             </>
           )}

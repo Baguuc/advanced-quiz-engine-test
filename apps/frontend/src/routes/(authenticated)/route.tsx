@@ -20,9 +20,13 @@ export const Route = createFileRoute("/(authenticated)")({
 
 function RouteComponent() {
   return (
-    <div>
+    <div className="flex min-h-screen flex-col">
       <NavMain />
-      <Outlet />
+      <main className="flex-1 bg-muted px-5 py-4 flex justify-center">
+        <div className="w-full max-w-300">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 }

@@ -1,61 +1,55 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
-
-const surveys = [
-  {
-    title: "Ankieta 1",
-    description: "Opis ankiety 1",
-    isActive: true,
-    imageSrc: "https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg",
-  },
-  {
-    title: "Ankieta 2",
-    description: "Opis ankiety 2",
-    isActive: true,
-    imageSrc: "https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg",
-  },
-  {
-    title: "Ankieta 3",
-    description: "Opis ankiety 3",
-    isActive: false,
-    imageSrc: "https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { orpc } from "@/lib/client";
 
 export const Route = createFileRoute("/(authenticated)/")({
   component: Index,
 });
 
 function Index() {
+  const forms = useQuery(orpc.form.list.queryOptions());
+
   return (
-    <main className="min-h-[calc(100vh-65px)] bg-muted px-5 py-6 text-slate-950 sm:px-8 lg:px-14 lg:py-10">
-      <div className="flex flex-wrap items-stretch gap-6 justify-between">
-        {surveys.map((x) => (
-          <Card key={x.title} className="relative flex w-full max-w-sm flex-col pt-0">
-            <img
-              src={x.imageSrc}
-              alt="Event cover"
-              className="relative z-20 aspect-video w-full object-cover brightness-100"
-            />
-            <CardHeader>
-              <CardAction>
-                {x.isActive ? (
-                  <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Active</Badge>
-                ) : (
-                  <Badge variant="destructive">Inactive</Badge>
-                )}
-              </CardAction>
-              <CardTitle>{x.title}</CardTitle>
-              <CardDescription>{x.description}</CardDescription>
-            </CardHeader>
-            <CardFooter className="mt-auto">
-              <Button className="w-full">zobacz szczegóły ankiety</Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </main>
+    <div className="flex flex-wrap items-stretch gap-6 justify-between">
+      {forms.data?.map((x) => (
+        <Card key={x.id} className="relative flex w-full max-w-sm flex-col pt-0">
+          <img
+            src="https://bi.im-g.pl/im/e6/13/1c/z29441766AMP,Ulica-Gospodarcza-w-Sosnowcu-konczy-sie-obecnie-mu.jpg"
+            alt="Event cover"
+            className="relative z-20 aspect-video w-full object-cover brightness-100"
+          />
+          <CardHeader>
+            <CardAction>
+              {x.status === "draft" ? (
+                <Badge className="bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300">
+                  Wersja robocza
+                </Badge>
+              ) : x.status === "published" ? (
+                <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Aktywna</Badge>
+              ) : x.status === "closed" ? (
+                <Badge variant="destructive">Nieaktywna</Badge>
+              ) : x.status === "archived" ? (
+                <Badge variant="ghost" className="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                  Zarchiwizowana
+                </Badge>
+              ) : null}
+            </CardAction>
+            <CardTitle>{x.title}</CardTitle>
+            <CardDescription className="col-span-2 line-clamp-3">{x.description}</CardDescription>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+            <Button
+              className="w-full"
+              render={<Link to={"/form/$formId/details"} params={{ formId: x.id.toString() }} />}
+            >
+              Zobacz szczegóły ankiety
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
   );
 }
