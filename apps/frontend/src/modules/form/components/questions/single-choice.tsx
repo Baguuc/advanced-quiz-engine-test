@@ -1,5 +1,5 @@
-import type { FormQuestionProps } from "@/components/form/utils.ts";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
+import type { FormQuestionProps } from "%/form/types.ts";
 
 export function FormQuestionSingleChoice({ question, value, onChange }: FormQuestionProps) {
   if (value && value.type !== "single_choice") return null;

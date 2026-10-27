@@ -1,5 +1,4 @@
 import { db } from "../db/db.ts";
-import { ORPCError } from "@orpc/server";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -129,7 +128,10 @@ export const getForm = protectedProcedure
 
 export const getFormDetails = protectedProcedure
   .input(z.object({ formId: z.number() }))
-  .handler(async ({ input, context }) => {
+  .errors({
+    NOT_FOUND: {},
+  })
+  .handler(async ({ input, context, errors }) => {
     const userId = Number(context.session.user.id);
 
     const selectedForm = await db.query.form.findFirst({
@@ -147,7 +149,7 @@ export const getFormDetails = protectedProcedure
     });
 
     if (!selectedForm) {
-      throw new ORPCError("NOT_FOUND", { message: "Form not found" });
+      throw errors.NOT_FOUND({ message: "Nie znaleziono formularza" });
     }
 
     const [responseStats] = await db

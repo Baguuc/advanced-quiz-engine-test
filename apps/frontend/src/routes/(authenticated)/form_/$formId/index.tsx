@@ -1,8 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { client } from "@/lib/client.ts";
 import { safe } from "@orpc/client";
-import { SurveyPage } from "@/components/form/survey-page.tsx";
 import { router } from "@/main.tsx";
+import { FormSurveyView } from "%/form/views/form-survey-view.tsx";
 
 export const Route = createFileRoute("/(authenticated)/form_/$formId/")({
   component: RouteComponent,
@@ -31,7 +31,5 @@ export const Route = createFileRoute("/(authenticated)/form_/$formId/")({
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
-
-  return <SurveyPage form={data.form} recordedAnswers={data.answers} />;
+  return <FormSurveyView />;
 }

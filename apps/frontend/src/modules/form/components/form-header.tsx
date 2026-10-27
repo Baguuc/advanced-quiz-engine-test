@@ -2,10 +2,10 @@ import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible.tsx
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { AspectRatio } from "@/components/ui/aspect-ratio.tsx";
-import { FormCard } from "@/components/form/form-card.tsx";
 import { compareAsc, formatDistanceToNowStrict } from "date-fns";
-import type { FormType } from "@/components/form/utils.ts";
 import { pl } from "date-fns/locale";
+import type { FormType } from "%/form/types.ts";
+import { FormCard } from "%/form/components/form-card.tsx";
 
 interface FormHeaderProps {
   form: FormType;

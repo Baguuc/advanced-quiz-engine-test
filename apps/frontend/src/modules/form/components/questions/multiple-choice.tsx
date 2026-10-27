@@ -1,5 +1,5 @@
-import type { FormQuestionProps } from "@/components/form/utils.ts";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
+import type { FormQuestionProps } from "%/form/types.ts";
 
 export function FormQuestionMultipleChoice({ question, value, onChange }: FormQuestionProps) {
   if (value && value.type !== "multiple_choice") return null;

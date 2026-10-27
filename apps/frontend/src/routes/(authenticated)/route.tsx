@@ -1,6 +1,6 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth.ts";
-import { NavMain } from "@/components/navbar/nav-main.tsx";
+import { HomeLayout } from "%/home/layouts/home-layout.tsx";
 
 export const Route = createFileRoute("/(authenticated)")({
   component: RouteComponent,
@@ -19,14 +19,5 @@ export const Route = createFileRoute("/(authenticated)")({
 });
 
 function RouteComponent() {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <NavMain />
-      <main className="flex-1 bg-muted px-5 py-4 flex justify-center">
-        <div className="w-full max-w-300">
-          <Outlet />
-        </div>
-      </main>
-    </div>
-  );
+  return <HomeLayout />;
 }
