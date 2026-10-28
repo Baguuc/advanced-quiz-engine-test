@@ -74,6 +74,7 @@ function FormCreator() {
     client.form
       .create({
         ...data,
+        status: "published",
         questions: questions.map((question, idx) => {
           return {
             type: "single_choice",
