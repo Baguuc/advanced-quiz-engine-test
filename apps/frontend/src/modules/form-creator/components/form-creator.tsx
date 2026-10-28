@@ -6,17 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckIcon, ClipboardCopyIcon, PlusIcon } from "lucide-react";
 import { client } from "@/lib/client";
-import { useClipboard } from "@mantine/hooks";
+import { randomId, useClipboard, useListState } from "@mantine/hooks";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
-  const [questions, setQuestions] = useState([
+  const [questions, questionHandlers] = useListState([
     {
-      id: 1,
+      key: randomId(),
       question: "Nowe Pytanie",
       options: [
-        { id: 1, text: "Opcja 1" },
-        { id: 2, text: "Opcja 2" },
+        { key: randomId(), text: "Opcja 1" },
+        { key: randomId(), text: "Opcja 2" },
       ],
     },
   ]);
@@ -34,60 +34,40 @@ function FormCreator() {
     setOpen(nextOpen);
   };
 
-  const updateQuestion = (questionId: number, value: string) => {
-    setQuestions((prev) =>
-      prev.map((question) => (question.id === questionId ? { ...question, question: value } : question)),
-    );
+  const updateQuestion = (questionIndex: number, value: string) => {
+    questionHandlers.setItemProp(questionIndex, "question", value);
   };
 
-  const updateOption = (questionId: number, optionId: number, value: string) => {
-    setQuestions((prev) =>
-      prev.map((question) =>
-        question.id === questionId
-          ? {
-              ...question,
-              options: question.options.map((option) => (option.id === optionId ? { ...option, text: value } : option)),
-            }
-          : question,
-      ),
-    );
+  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
+    const oldOptions = questions[questionIndex].options;
+    const newOptions = [...oldOptions];
+    newOptions[optionIndex].text = value;
+
+    questionHandlers.setItemProp(questionIndex, "options", newOptions);
   };
 
   function addQuestion() {
-    setQuestions((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1, //To jest git?
-        question: "Nowe Pytanie",
-        options: [
-          { id: 1, text: "Opcja 1" },
-          { id: 2, text: "Opcja 2" },
-        ],
-      },
-    ]);
+    questionHandlers.append({
+      key: randomId(),
+      question: "Nowe Pytanie",
+      options: [
+        { key: randomId(), text: "Opcja 1" },
+        { key: randomId(), text: "Opcja 2" },
+      ],
+    });
   }
 
-  function addOption(questionId: number) {
-    setQuestions((prev) =>
-      prev.map((question) =>
-        question.id === questionId
-          ? { ...question, options: [...question.options, { id: question.options.length + 1, text: "Nowa Opcja" }] }
-          : question,
-      ),
-    );
+  function addOption(questionIndex: number) {
+    const oldOptions = questions[questionIndex].options;
+    const newOptions = [...oldOptions];
+    questionHandlers.setItemProp(questionIndex, "options", newOptions);
   }
 
-  function deleteOption(questionId: number, optionId: number) {
-    setQuestions((prev) =>
-      prev.map((question) =>
-        question.id === questionId
-          ? {
-              ...question,
-              options: question.options.filter((option) => option.id !== optionId),
-            }
-          : question,
-      ),
-    );
+  function deleteOption(questionIndex: number, optionIndex: number) {
+    const oldOptions = questions[questionIndex].options;
+    const newOptions = [...oldOptions];
+    newOptions.splice(optionIndex, 1);
+    questionHandlers.setItemProp(questionIndex, "options", newOptions);
   }
 
   const submitForm = () =>
@@ -114,13 +94,13 @@ function FormCreator() {
   const closeModal = () => {
     setPage("name");
     setData({ title: "", description: "" });
-    setQuestions([
+    questionHandlers.setState([
       {
-        id: 0,
+        key: randomId(),
         question: "Nowe Pytanie",
         options: [
-          { id: 0, text: "Opcja 1" },
-          { id: 1, text: "Opcja 2" },
+          { key: randomId(), text: "Opcja 1" },
+          { key: randomId(), text: "Opcja 2" },
         ],
       },
     ]);
@@ -190,24 +170,24 @@ function FormCreator() {
                 <h3 className="mt-4 text-base font-semibold">Larpuj dodawanie pytań do ankiety.</h3>
 
                 <div className="scrollbar-auto max-h-[50vh] overflow-y-auto px-4 m-5 grid place-items-center">
-                  {questions.map((question) => (
-                    <div key={question.id} className="mb-4 p-4 border rounded">
+                  {questions.map((question, questionIndex) => (
+                    <div key={question.key} className="mb-4 p-4 border rounded">
                       <Input
                         value={question.question}
-                        onChange={(e) => updateQuestion(question.id, e.target.value)}
+                        onChange={(e) => updateQuestion(questionIndex, e.target.value)}
                         className="mb-2"
                       />
 
                       <div className="mb-2 text-sm m-3 font-semibold  min-w-100">
                         Opcje:
                         <ul>
-                          {question.options.map((option) => (
-                            <li key={option.id}>
+                          {question.options.map((option, optionIndex) => (
+                            <li key={option.key}>
                               <div className="flex items-center justify-content: center; gap-2 m-1">
                                 <Input
                                   value={option.text}
                                   onChange={(e) => {
-                                    updateOption(question.id, option.id, e.target.value);
+                                    updateOption(questionIndex, optionIndex, e.target.value);
                                   }}
                                   className="mb-1"
                                 />
@@ -215,7 +195,7 @@ function FormCreator() {
                                   variant="outline"
                                   className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1"
                                   size="sm"
-                                  onClick={() => deleteOption(question.id, option.id)}
+                                  onClick={() => deleteOption(questionIndex, optionIndex)}
                                 >
                                   {" "}
                                   X{" "}
@@ -224,7 +204,7 @@ function FormCreator() {
                             </li>
                           ))}
                         </ul>
-                        <Button variant="secondary" onClick={() => addOption(question.id)}>
+                        <Button variant="secondary" onClick={() => addOption(questionIndex)}>
                           Dodaj Opcję
                         </Button>
                       </div>

@@ -1,4 +1,4 @@
-import type { FormQuestionProps } from "@/components/form/utils.ts";
+import type { FormQuestionProps } from "%/form/types.ts";
 
 export function FormQuestionUnsupported({ question }: FormQuestionProps) {
   return (

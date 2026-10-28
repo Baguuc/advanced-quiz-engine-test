@@ -1,11 +1,5 @@
-import { FormHeader } from "@/components/form/form-header.tsx";
-import { FormQuestionSingleChoice } from "@/components/form/questions/single-choice.tsx";
 import * as React from "react";
 import { useState } from "react";
-import { FormQuestionUnsupported } from "@/components/form/questions/unsupported.tsx";
-import type { FormAnswerType, FormQuestionProps, FormQuestionType, FormType } from "@/components/form/utils.ts";
-import { FormQuestionMultipleChoice } from "@/components/form/questions/multiple-choice.tsx";
-import { QuestionCard } from "@/components/form/questions/question-card.tsx";
 import { client, orpc } from "@/lib/client.ts";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { isEqual } from "lodash";
@@ -15,12 +9,13 @@ import { isDefinedError } from "@orpc/client";
 import { Button } from "@/components/ui/button.tsx";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
 import { AlertCircleIcon } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
-
-interface SurveyPageProps {
-  form: FormType;
-  recordedAnswers: Record<number, FormAnswerType>;
-}
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
+import type { FormAnswerType, FormQuestionProps, FormQuestionType } from "%/form/types.ts";
+import { FormQuestionUnsupported } from "%/form/components/questions/unsupported.tsx";
+import { FormQuestionSingleChoice } from "%/form/components/questions/single-choice.tsx";
+import { FormQuestionMultipleChoice } from "%/form/components/questions/multiple-choice.tsx";
+import { QuestionCard } from "%/form/components/question-card.tsx";
+import { FormHeader } from "%/form/components/form-header.tsx";
 
 const questionComponents: Record<FormQuestionType["type"], React.ComponentType<FormQuestionProps>> = {
   short_text: FormQuestionUnsupported,
@@ -35,7 +30,10 @@ const questionComponents: Record<FormQuestionType["type"], React.ComponentType<F
   linear_scale: FormQuestionUnsupported,
 };
 
-export const SurveyPage = ({ form, recordedAnswers }: SurveyPageProps) => {
+export const FormSurveyView = () => {
+  const routeApi = getRouteApi("/(authenticated)/form_/$formId/");
+  const { form, answers: recordedAnswers } = routeApi.useLoaderData();
+
   const [answers, setAnswers] = useState<Record<number, FormAnswerType>>(recordedAnswers);
   const [lastAnswers, setLastAnswers] = useState<Record<number, FormAnswerType>>(recordedAnswers);
   const [started, setStarted] = useState(Object.keys(recordedAnswers).length > 0);

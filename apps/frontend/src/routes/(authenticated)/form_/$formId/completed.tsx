@@ -1,8 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { client } from "@/lib/client.ts";
 import { safe } from "@orpc/client";
-import { FormCard } from "@/components/form/form-card.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { FormCard } from "%/form/components/form-card.tsx";
 
 export const Route = createFileRoute("/(authenticated)/form_/$formId/completed")({
   component: RouteComponent,

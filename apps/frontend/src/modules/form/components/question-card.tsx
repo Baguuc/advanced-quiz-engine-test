@@ -1,6 +1,6 @@
-import type { FormQuestionType } from "@/components/form/utils.ts";
 import * as React from "react";
-import { FormCard } from "@/components/form/form-card.tsx";
+import type { FormQuestionType } from "%/form/types.ts";
+import { FormCard } from "%/form/components/form-card.tsx";
 
 interface QuestionCardProps {
   question: FormQuestionType;

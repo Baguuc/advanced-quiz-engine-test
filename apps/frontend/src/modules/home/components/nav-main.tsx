@@ -1,8 +1,8 @@
-import { CompanyLogo } from "@/components/legal/company-logo.tsx";
-import { NavUser } from "@/components/navbar/nav-user.tsx";
-import { FormCreator } from "@/components/form-creator.tsx";
 import { ModeToggle } from "@/components/theme/mode-toggle.tsx";
 import { Link } from "@tanstack/react-router";
+import { CompanyLogo } from "%/legal/components/company-logo.tsx";
+import { NavUser } from "%/home/components/nav-user.tsx";
+import { FormCreator } from "%/form-creator/components/form-creator.tsx";
 
 export function NavMain() {
   return (
