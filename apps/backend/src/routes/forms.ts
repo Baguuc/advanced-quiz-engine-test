@@ -1,5 +1,5 @@
 import { db } from "../db/db.ts";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
   answer,
@@ -205,6 +205,30 @@ export const getFormDetails = protectedProcedure
         }),
       })),
     };
+  });
+
+export const updateFormStatus = protectedProcedure
+  .input(
+    z.object({
+      formId: z.number(),
+      status: z.enum(form_status.enumValues),
+    }),
+  )
+  .errors({
+    NOT_FOUND: {},
+  })
+  .handler(async ({ input, context, errors }) => {
+    const [updatedForm] = await db
+      .update(form)
+      .set({ status: input.status })
+      .where(and(eq(form.id, input.formId), eq(form.ownerId, Number(context.session.user.id))))
+      .returning({ id: form.id, status: form.status });
+
+    if (!updatedForm) {
+      throw errors.NOT_FOUND({ message: "Nie znaleziono formularza" });
+    }
+
+    return updatedForm;
   });
 
 export const createForm = protectedProcedure
