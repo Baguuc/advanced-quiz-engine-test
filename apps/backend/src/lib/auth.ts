@@ -3,6 +3,9 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/db.ts";
 import * as schema from "../db/schema.ts";
 import { i18n, locales } from "@better-auth/i18n";
+import { getEnvConfig } from "./env.ts";
+
+const config = getEnvConfig();
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -17,8 +20,8 @@ export const auth = betterAuth({
       generateId: "serial",
     },
   },
-  baseURL: "http://localhost:3000/auth",
-  trustedOrigins: ["http://localhost:5173"],
+  baseURL: `${config.baseUrl}/${config.betterAuthPath}`,
+  trustedOrigins: [config.corsTrustedOrigin],
   plugins: [
     i18n({
       translations: {
