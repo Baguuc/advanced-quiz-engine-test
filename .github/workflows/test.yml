@@ -48,15 +48,22 @@ jobs:
       - name: Run database migrations
         env:
           NODE_ENV: test
+          APP_PORT: 3000
+          BASE_URL: http://localhost:3000
+          CORS_TRUSTED_ORIGIN: "doesntmatter"
           DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
           BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
-          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_PATH: auth
+          ORPC_PATH: rpc
         run: pnpm run db:test:migrate
 
       - name: Run tests
         env:
-          NODE_ENV: test
+          APP_PORT: 3000
+          BASE_URL: http://localhost:3000
+          CORS_TRUSTED_ORIGIN: "doesntmatter"
           DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
           BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
-          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_PATH: auth
+          ORPC_PATH: rpc
         run: pnpm run test
