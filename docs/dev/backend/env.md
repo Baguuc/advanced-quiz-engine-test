@@ -19,7 +19,7 @@ np. postgres://user:password@localhost:5432/dbname
 
 ### BETTER_AUTH_SECRET
 Ustawia klucz hashowania użyty do autoryzacji.
-np. aksldjij21ijsdfa
+np. W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
 
 ### BETTER_AUTH_PATH
 Ustawia scieżke (po bazowym url) na której będzie działać moduł autoryzacji.
