@@ -7,7 +7,7 @@ function ltrim(str: string, char: string) {
 
 function rtrim(str: string, char: string) {
   while (str.endsWith(char)) {
-    str = str.slice(0, str.length-char.length);
+    str = str.slice(0, str.length - char.length);
   }
   return str;
 }
