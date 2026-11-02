@@ -1,6 +1,6 @@
 import { ltrim } from "./utils";
 
-const getEnvConfig = () => {
+export function getEnvConfig() {
   const env = import.meta.env;
 
   return {
@@ -8,6 +8,4 @@ const getEnvConfig = () => {
     authPath: ltrim(env.VITE_AUTH_PATH as string, "/"),
     rpcPath: ltrim(env.VITE_RPC_PATH as string, "/"),
   };
-};
-
-export { getEnvConfig };
+}

@@ -1,9 +1,7 @@
 import "dotenv/config";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import dotenv from "dotenv";
 import { ltrim, rtrim } from "./utils.ts";
 
-const getEnvConfig = () => {
+export const getEnvConfig = () => {
   return {
     appPort: process.env.APP_PORT!,
     baseUrl: rtrim(process.env.APP_BASE_URL!, "/"),
@@ -14,5 +12,3 @@ const getEnvConfig = () => {
     orpcPath: ltrim(process.env.ORPC_PATH!, "/"),
   };
 };
-
-export { getEnvConfig };
