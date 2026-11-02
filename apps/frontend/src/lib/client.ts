@@ -2,13 +2,13 @@ import { RPCLink } from "@orpc/client/fetch";
 import { createORPCClient } from "@orpc/client";
 import type { RouterClientType } from "backend";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
-import { ltrim } from "./utils";
+import { getEnvConfig } from "./env";
 
-const env = import.meta.env;
+const config = getEnvConfig();
 
 const link = new RPCLink({
-  origin: env.VITE_API_URL,
-  url: `/${ltrim(env.VITE_RPC_PATH, '/')}`,
+  origin: config.apiUrl,
+  url: `/${config.rpcPath}`,
   fetch: (url, init) => {
     return globalThis.fetch(url, {
       ...init,
