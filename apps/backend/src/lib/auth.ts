@@ -20,7 +20,7 @@ export const auth = betterAuth({
       generateId: "serial",
     },
   },
-  baseURL: `${config.baseUrl}/${config.betterAuthPath}`,
+  baseURL: new URL(config.betterAuthPath, config.baseUrl).href,
   trustedOrigins: [config.corsTrustedOrigin],
   plugins: [
     i18n({
