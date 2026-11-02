@@ -5,8 +5,8 @@ Backend używa zmiennych środowiskowych aby konfigurować ważne dane konfigura
 APP_PORT ustawia port na jakim bedzie dzialac aplikacja.
 np. 3000
 
-### BASE_URL
-BASE_URL ustawia bazowy url aplikacji np. do better auth.
+### APP_BASE_URL
+APP_BASE_URL ustawia bazowy url aplikacji np. do better auth.
 np. http://localhost:3000
 
 ### CORS_TRUSTED_ORIGIN

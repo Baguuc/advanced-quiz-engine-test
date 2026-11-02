@@ -49,7 +49,7 @@ jobs:
         env:
           NODE_ENV: test
           APP_PORT: 3000
-          BASE_URL: http://localhost:3000
+          APP_BASE_URL: http://localhost:3000
           CORS_TRUSTED_ORIGIN: "doesntmatter"
           DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
           BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
@@ -60,7 +60,7 @@ jobs:
       - name: Run tests
         env:
           APP_PORT: 3000
-          BASE_URL: http://localhost:3000
+          APP_BASE_URL: http://localhost:3000
           CORS_TRUSTED_ORIGIN: "doesntmatter"
           DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
           BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
