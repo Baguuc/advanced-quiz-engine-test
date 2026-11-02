@@ -28,8 +28,8 @@ docker compose up -d
 ---
 ## 4. Wprowadź zmienne środowiskowe.
 
-W folderze `/apps/backend` skopiuj plik `.env.example` i zmień jego nazwę na `.env`.
-Wypełnij go zgodnie z [instrukcją](environment.md).
+W folderach `/apps/backend` i `/apps/frontend` skopiuj istniejące w nich pliki `.env.example` i zmień ich nazwy na `.env`.
+Wypełnij je zgodnie z opisami z [dokumentacji zmiennych środowiskowych](environment.md).
 
 ---
 ## 5. Zrób migrację bazy danych.
