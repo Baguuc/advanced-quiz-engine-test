@@ -5,12 +5,10 @@ export function HomeView() {
   const routeApi = getRouteApi("/(authenticated)/");
   const forms = routeApi.useLoaderData();
 
-  if(forms.length === 0) {
+  if (forms.length === 0) {
     return (
       <div className="flex min-h-full flex-col items-center justify-center gap-4 text-center">
-        <p className="text-lg text-muted-foreground">
-          Nie masz jeszcze żadnych ankiet
-        </p>
+        <p className="text-lg text-muted-foreground">Nie masz jeszcze żadnych ankiet</p>
       </div>
     );
   }
