@@ -41,4 +41,4 @@ app.use(`/${config.orpcPath}/{*path}`, async (req, res, next) => {
   next();
 });
 
-app.listen(3000, () => console.log("Server listening on port 3000"));
+app.listen(Number(config.appPort), () => console.log(`Server listening on port ${config.appPort}`));
