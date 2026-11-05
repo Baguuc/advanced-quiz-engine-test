@@ -34,7 +34,7 @@ function RouteComponent() {
 
       <p>Twoja odpowiedź została zapisana.</p>
 
-      <Button className="w-min">Wyślij kopie mailem</Button>
+      {data.auth && <Button className="w-min">Wyślij kopie mailem</Button>}
     </FormCard>
   );
 }

@@ -16,6 +16,7 @@ import { FormQuestionSingleChoice } from "%/form/components/questions/single-cho
 import { FormQuestionMultipleChoice } from "%/form/components/questions/multiple-choice.tsx";
 import { QuestionCard } from "%/form/components/question-card.tsx";
 import { FormHeader } from "%/form/components/form-header.tsx";
+import { authClient } from "@/lib/auth.ts";
 
 const questionComponents: Record<FormQuestionType["type"], React.ComponentType<FormQuestionProps>> = {
   short_text: FormQuestionUnsupported,
@@ -33,6 +34,9 @@ const questionComponents: Record<FormQuestionType["type"], React.ComponentType<F
 export const FormSurveyView = () => {
   const routeApi = getRouteApi("/(authenticated)/form_/$formId/");
   const { form, answers: recordedAnswers } = routeApi.useLoaderData();
+
+  const session = authClient.useSession();
+  const authenticatedExperience = !!session.data?.user;
 
   const [answers, setAnswers] = useState<Record<number, FormAnswerType>>(recordedAnswers);
   const [lastAnswers, setLastAnswers] = useState<Record<number, FormAnswerType>>(recordedAnswers);
@@ -67,7 +71,25 @@ export const FormSurveyView = () => {
     }),
   );
 
+  const submitAnonymousMutation = useMutation(
+    orpc.response.submitAnonymous.mutationOptions({
+      onSuccess: async () => {
+        setSubmissionError(null);
+        await navigate({ to: "/form/$formId/completed", params: { formId: form.id.toString() } });
+      },
+      onError: (error) => {
+        if (isDefinedError(error)) {
+          setSubmissionError(error.message);
+        } else {
+          setSubmissionError("Wystąpił błąd podczas wysyłania odpowiedzi");
+        }
+      },
+    }),
+  );
+
   const answerUpdate = async () => {
+    if (!authenticatedExperience) return;
+
     const changes: typeof answers = {};
 
     Object.entries(answers).forEach(([questionId, answer]) => {
@@ -93,15 +115,24 @@ export const FormSurveyView = () => {
 
   const submitForm = async () => {
     answerUpdateDebounced.cancel();
-    await answerUpdate();
-    await submitMutation.mutateAsync({ formId: form.id });
+    if (authenticatedExperience) {
+      await answerUpdate();
+      await submitMutation.mutateAsync({ formId: form.id });
+    } else {
+      await submitAnonymousMutation.mutateAsync({
+        formId: form.id,
+        response: answers,
+      });
+    }
   };
 
   const setAnswer = async (questionId: number, answer: FormAnswerType) => {
     if (!started) {
-      await client.response.start({
-        formId: form.id,
-      });
+      if (authenticatedExperience) {
+        await client.response.start({
+          formId: form.id,
+        });
+      }
       setStarted(true);
     }
 

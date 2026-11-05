@@ -340,7 +340,7 @@ export const submitAnonymousResponse = sessionOptionalProcedure
     });
   });
 
-export const queryCompletionScreen = protectedProcedure
+export const queryCompletionScreen = sessionOptionalProcedure
   .input(
     z.object({
       formId: z.number(),
@@ -350,6 +350,20 @@ export const queryCompletionScreen = protectedProcedure
     BAD_REQUEST: {},
   })
   .handler(async ({ input, context, errors }) => {
+    if (!context.session) {
+      const form = await db.query.form.findFirst({
+        where: {
+          id: input.formId,
+        },
+      });
+
+      if (!form) {
+        throw errors.BAD_REQUEST();
+      }
+
+      return { title: form.title, auth: false };
+    }
+
     const userId = Number(context.session.user.id);
 
     const userResponse = await db.query.response.findFirst({
@@ -369,5 +383,6 @@ export const queryCompletionScreen = protectedProcedure
 
     return {
       title: userResponse.form.title,
+      auth: true,
     };
   });
