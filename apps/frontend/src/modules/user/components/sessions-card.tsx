@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UAParser } from "ua-parser-js";
 import { LogOutIcon, MonitorIcon, SmartphoneIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
@@ -23,31 +23,44 @@ function describeDevice(userAgent?: string | null) {
   return { label, mobile: device.type === "mobile" || device.type === "tablet" };
 }
 
+// `city` / `country` are custom session fields (server setup from my first message)
+function describeLocation(session: object) {
+  const { city, country } = session as { city?: string | null; country?: string | null };
+  return [city, country].filter(Boolean).join(", ") || "Nieznana";
+}
+
+// current session first, then newest activity
+function sortSessions(list: SessionItem[], currentSessionId: string) {
+  return [...list].sort((a, b) => {
+    if (a.id === currentSessionId) return -1;
+    if (b.id === currentSessionId) return 1;
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+  });
+}
+
 export function SessionsCard({ currentSessionId }: { currentSessionId: string }) {
   const [sessions, setSessions] = useState<SessionItem[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null); // token | "others"
   const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    const { data, error } = await authClient.listSessions();
-    if (error) {
-      setError("Nie udało się pobrać sesji");
-      setSessions((prev) => prev ?? []);
-      return;
-    }
-    // current session first, then newest activity
-    setSessions(
-      [...(data ?? [])].sort((a, b) => {
-        if (a.id === currentSessionId) return -1;
-        if (b.id === currentSessionId) return 1;
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-      }),
-    );
-  }, [currentSessionId]);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let cancelled = false;
+
+    void authClient.listSessions().then(({ data, error }) => {
+      if (cancelled) return;
+      if (error) {
+        setError("Nie udało się pobrać sesji");
+        setSessions((prev) => prev ?? []);
+        return;
+      }
+      setSessions(sortSessions(data ?? [], currentSessionId));
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentSessionId, reloadKey]);
 
   async function revokeOne(token: string) {
     setBusy(token);
@@ -58,7 +71,7 @@ export function SessionsCard({ currentSessionId }: { currentSessionId: string })
       setError(error.message ?? "Nie udało się wylogować sesji");
       return;
     }
-    await load();
+    setReloadKey((k) => k + 1);
   }
 
   async function revokeOthers() {
@@ -70,7 +83,7 @@ export function SessionsCard({ currentSessionId }: { currentSessionId: string })
       setError(error.message ?? "Nie udało się wylogować sesji");
       return;
     }
-    await load();
+    setReloadKey((k) => k + 1);
   }
 
   const hasOthers = sessions?.some((s) => s.id !== currentSessionId) ?? false;
@@ -100,9 +113,6 @@ export function SessionsCard({ currentSessionId }: { currentSessionId: string })
               const isCurrent = s.id === currentSessionId;
               const { label, mobile } = describeDevice(s.userAgent);
               const DeviceIcon = mobile ? SmartphoneIcon : MonitorIcon;
-              // `city` / `country` are custom fields (server setup from my first message)
-              const location =
-                [(s as any).city, (s as any).country].filter(Boolean).join(", ") || "Nieznana";
 
               return (
                 <div key={s.id} className="flex items-center gap-3 rounded-lg border p-3">
@@ -115,8 +125,10 @@ export function SessionsCard({ currentSessionId }: { currentSessionId: string })
                     <span className="text-muted-foreground">
                       Ostatnia aktywność: {dateFormat.format(new Date(s.updatedAt))}
                     </span>
-                    <span className="text-muted-foreground">Lokalizacja: {location}</span>
-                    <span className="text-muted-foreground">IP: {s.ipAddress || "Nieznany"}</span>
+                    <span className="text-muted-foreground">
+                      Lokalizacja: {describeLocation(s)}
+                    </span>
+                    <span className="text-muted-foreground">IP: {s.ipAddress ?? "Nieznany"}</span>
                   </div>
                   {!isCurrent && (
                     <Button

@@ -2,9 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.t
 import { Field, FieldLabel } from "@/components/ui/field.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { authClient } from "@/lib/auth.ts";
-import { ChangeNameDialog } from "./change-name-dialog.tsx";
-import { ChangePasswordDialog } from "./change-password-dialog.tsx";
-import { SessionsCard } from "./sessions-card.tsx";
+import { ChangeNameDialog } from "../components/change-name-dialog.tsx";
+import { ChangePasswordDialog } from "../components/change-password-dialog.tsx";
+import { SessionsCard } from "../components/sessions-card.tsx";
 
 export function AccountSettingsView() {
   const session = authClient.useSession();
