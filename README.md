@@ -1,7 +1,7 @@
 # advanced-quiz-engine
 
 ### Poradnik odpalenia wersji podglądowej projektu
-Jeśli chcesz stestować projekt przejdź do [poradnika wersji podglądowej](docs/preview/prerequisites.md).
+Jeśli chcesz stestować projekt przejdź do [poradnika wersji podglądowej](docs/preview/start.md).
 
 ### Spis treści dokumentacji
 * Wersja podglądowa

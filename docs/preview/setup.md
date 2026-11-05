@@ -20,17 +20,16 @@ pnpm install
 
 ---
 ## 3. Wprowadź zmienne środowiskowe.
-Skopiuj plik .env.example i wypełnij go zgodnie ze [specyfikacją zmiennych](environment.md).
+Skopiuj plik .env.example, zmień jego nazwę na .env i wypełnij go zgodnie ze [specyfikacją zmiennych](environment.md).
 
 ---
-## 4. Uruchom bazę danych i serwery.
+## 4. Uruchom bazę danych i kontenery.
 ```
 docker compose -f docker-compose.preview.yaml up -d
 ```
-[Więcej komend dockera](docker.md)
 
 ---
-## 5. Zrób migrację bazy danych.
+## 5. Zmigruj bazę danych.
 ```
 pnpm run db:migrate
 ```
