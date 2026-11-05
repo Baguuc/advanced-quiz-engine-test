@@ -17,6 +17,46 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - postgres
 
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      APP_PORT: 3000
+      APP_BASE_URL: "http://localhost:3000"
+      CORS_TRUSTED_ORIGIN: "http://localhost:5173"
+      DATABASE_URL: "postgresql://dev:dev@postgres:5432/quiz-engine"
+      BETTER_AUTH_SECRET: "W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA"
+      BETTER_AUTH_PATH: "auth"
+      ORPC_PATH: "rpc"
+    ports:
+      - "${APP_PORT:-3000}:${APP_PORT:-3000}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - postgres
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+        VITE_RPC_PATH: ${VITE_RPC_PATH:-rpc}
+        VITE_AUTH_PATH: ${VITE_AUTH_PATH:-auth}
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+networks:
+  postgres:
+    name: postgres
+    driver: bridge
 volumes:
   postgres_data:
