@@ -56,13 +56,7 @@ export function ChangeNameDialog({ currentName }: { currentName: string }) {
             <DialogTitle>Zmień nazwę</DialogTitle>
             <DialogDescription>Podaj nową nazwę użytkownika.</DialogDescription>
           </DialogHeader>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            minLength={2}
-            required
-            autoFocus
-          />
+          <Input value={name} onChange={(e) => setName(e.target.value)} minLength={2} required autoFocus />
           <ErrorAlert message={error} />
           <DialogFooter>
             <Button type="submit" disabled={loading || !name.trim() || name === currentName}>

@@ -60,22 +60,14 @@ export function ChangePasswordDialog() {
         if (!o) reset();
       }}
     >
-      <Button
-        type="button"
-        variant="secondary"
-        size="icon"
-        className="ml-auto"
-        onClick={() => setOpen(true)}
-      >
+      <Button type="button" variant="secondary" size="icon" className="ml-auto" onClick={() => setOpen(true)}>
         <SquarePenIcon />
       </Button>
       <DialogContent>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Zmień hasło</DialogTitle>
-            <DialogDescription>
-              Po zmianie hasła zostaniesz wylogowany ze wszystkich innych sesji.
-            </DialogDescription>
+            <DialogDescription>Po zmianie hasła zostaniesz wylogowany ze wszystkich innych sesji.</DialogDescription>
           </DialogHeader>
           <Input
             type="password"

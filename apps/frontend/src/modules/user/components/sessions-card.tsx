@@ -18,8 +18,7 @@ const dateFormat = new Intl.DateTimeFormat("pl-PL", {
 function describeDevice(userAgent?: string | null) {
   if (!userAgent) return { label: "Nieznane urządzenie", mobile: false };
   const { browser, os, device } = new UAParser(userAgent).getResult();
-  const label =
-    [browser.name, os.name].filter(Boolean).join(" na ") || "Nieznane urządzenie";
+  const label = [browser.name, os.name].filter(Boolean).join(" na ") || "Nieznane urządzenie";
   return { label, mobile: device.type === "mobile" || device.type === "tablet" };
 }
 
@@ -125,9 +124,7 @@ export function SessionsCard({ currentSessionId }: { currentSessionId: string })
                     <span className="text-muted-foreground">
                       Ostatnia aktywność: {dateFormat.format(new Date(s.updatedAt))}
                     </span>
-                    <span className="text-muted-foreground">
-                      Lokalizacja: {describeLocation(s)}
-                    </span>
+                    <span className="text-muted-foreground">Lokalizacja: {describeLocation(s)}</span>
                     <span className="text-muted-foreground">IP: {s.ipAddress ?? "Nieznany"}</span>
                   </div>
                   {!isCurrent && (
