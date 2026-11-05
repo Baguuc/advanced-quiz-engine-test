@@ -21,7 +21,7 @@ pnpm install
 ---
 ## 3. Uruchom bazę danych.
 ```
-docker compose up -d
+docker compose -f docker-compose.dev.yaml up -d
 ```
 [Więcej komend dockera](docker.md)
 
