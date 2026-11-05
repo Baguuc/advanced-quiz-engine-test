@@ -12,7 +12,7 @@ import {
   questionOption,
   response,
 } from "../db/schema.ts";
-import { protectedProcedure } from "../lib/server.ts";
+import { protectedProcedure, sessionOptionalProcedure } from "../lib/server.ts";
 
 export const listForms = protectedProcedure.handler(async ({ context }) => {
   const userId = Number(context.session.user.id);
@@ -24,7 +24,7 @@ export const listForms = protectedProcedure.handler(async ({ context }) => {
   });
 });
 
-export const getForm = protectedProcedure
+export const getForm = sessionOptionalProcedure
   .input(z.object({ formId: z.number() }))
   .errors({
     NOT_FOUND: {
@@ -77,6 +77,10 @@ export const getForm = protectedProcedure
 
     if (!form) {
       throw errors.NOT_FOUND();
+    }
+
+    if (!context.session) {
+      return { form, answers: {} };
     }
 
     const response = await db.query.response.findFirst({
