@@ -9,7 +9,7 @@ interface SingleSelectQEProps {
   addOption: (questionIndex: number) => void;
 }
 
-function SingleSelectQE({options, questionIndex, updateOption, deleteOption, addOption}:SingleSelectQEProps) {
+function SingleSelectQE({ options, questionIndex, updateOption, deleteOption, addOption }: SingleSelectQEProps) {
   return (
     <>
       <div>
