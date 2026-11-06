@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { CheckIcon, ClipboardCopyIcon, PlusIcon } from "lucide-react";
 import { client } from "@/lib/client";
 import { randomId, useClipboard, useListState } from "@mantine/hooks";
+import SingleSelectQE from "@/components/question_editors/singleSelectQE";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
@@ -35,18 +36,6 @@ function FormCreator() {
     setOpen(nextOpen);
   };
 
-  const updateQuestion = (questionIndex: number, value: string) => {
-    questionHandlers.setItemProp(questionIndex, "question", value);
-  };
-
-  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
-    const oldOptions = questions[questionIndex].options;
-    const newOptions = [...oldOptions];
-    newOptions[optionIndex].text = value;
-
-    questionHandlers.setItemProp(questionIndex, "options", newOptions);
-  };
-
   function addQuestion() {
     questionHandlers.append({
       key: randomId(),
@@ -59,12 +48,29 @@ function FormCreator() {
     });
   }
 
-  function addOption(questionIndex: number) {
+  const updateQuestion = (questionIndex: number, value: string) => {
+    questionHandlers.setItemProp(questionIndex, "question", value);
+  };
 
+  function addOption(questionIndex: number) {
+    const oldOptions = questions[questionIndex].options;
+    const newOptions = [...oldOptions];
+    questionHandlers.setItemProp(questionIndex, "options", newOptions);
   }
 
-  function deleteOption(questionIndex: number, optionIndex: number) {
+  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
+    const oldOptions = questions[questionIndex].options;
+    const newOptions = [...oldOptions];
+    newOptions[optionIndex].text = value;
 
+    questionHandlers.setItemProp(questionIndex, "options", newOptions);
+  };
+
+  function deleteOption(questionIndex: number, optionIndex: number) {
+    const oldOptions = questions[questionIndex].options;
+    const newOptions = [...oldOptions];
+    newOptions.splice(optionIndex, 1);
+    questionHandlers.setItemProp(questionIndex, "options", newOptions);
   }
 
   const submitForm = () =>
@@ -175,8 +181,11 @@ function FormCreator() {
                         onChange={(e) => updateQuestion(questionIndex, e.target.value)}
                         className="mb-2"
                       />
-
-
+                      <SingleSelectQE 
+                        options={question.options}
+                        questionIndex={questionIndex}
+                        updateOption={updateOption}
+                      />
                     </div>
                   ))}
                 </div>
