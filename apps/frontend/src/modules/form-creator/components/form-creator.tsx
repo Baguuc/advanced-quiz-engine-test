@@ -103,6 +103,7 @@ function FormCreator() {
     client.form
       .create({
         ...data,
+        status: "published",
         questions: questions.map((question, idx) => {
           return {
             type: question.type,
