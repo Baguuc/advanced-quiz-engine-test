@@ -1,7 +1,16 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-function SingleSelectQE(props: {options: { key: string; text: string }[], questionIndex: number, updateOption: (questionIndex: number, optionIndex: number, value: string) => void, deleteOption: (questionIndex: number, optionIndex: number) => void, addOption: (questionIndex: number) => void}) {
+interface MultiSelectQEProps {
+    options: { key: string; text: string }[],
+    questionIndex: number,
+    updateOption: (questionIndex: number, optionIndex: number, value: string) => void,
+    deleteOption: (questionIndex: number, optionIndex: number) => void, 
+    addOption: (questionIndex: number) => void
+}
+
+function MultiSelectQE(props: MultiSelectQEProps) 
+    {
     return (<>
         <div>
             <ul>
@@ -33,4 +42,4 @@ function SingleSelectQE(props: {options: { key: string; text: string }[], questi
     </>)
 }
 
-export default SingleSelectQE
+export default MultiSelectQE
