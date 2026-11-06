@@ -1,0 +1,138 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    name: Prepare workspace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Keep pnpm's symlinks, hidden files, and executable permissions intact.
+      # The archive lives outside the workspace so tar cannot include itself.
+      - name: Archive prepared workspace
+        run: tar --exclude='./.git' -czf "$RUNNER_TEMP/workspace.tar.gz" .
+
+      - name: Upload prepared workspace
+        uses: actions/upload-artifact@v7
+        with:
+          name: prepared-workspace
+          path: ${{ runner.temp }}/workspace.tar.gz
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
+
+  quality:
+    name: ${{ matrix.name }}
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Prettier
+            command: pnpm format:check
+          - name: ESLint
+            command: pnpm lint
+          - name: Type check frontend
+            command: pnpm --filter frontend typecheck
+          - name: Type check backend
+            command: pnpm --filter backend typecheck
+    steps:
+      - name: Download prepared workspace
+        uses: actions/download-artifact@v8
+        with:
+          name: prepared-workspace
+          path: ${{ runner.temp }}/prepared-workspace
+
+      - name: Restore prepared workspace
+        run: tar -xzf "$RUNNER_TEMP/prepared-workspace/workspace.tar.gz" -C "$GITHUB_WORKSPACE"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Run check
+        run: ${{ matrix.command }}
+
+  test:
+    name: Run tests
+    needs: setup
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: dev
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: quiz-engine-test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dev -d quiz-engine-test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      APP_PORT: 3000
+      APP_BASE_URL: http://localhost:3000
+      CORS_TRUSTED_ORIGIN: "doesntmatter"
+      DATABASE_URL: postgresql://dev:dev@localhost:5432/quiz-engine-test
+      BETTER_AUTH_SECRET: W7Ou90ehWsEkTpRlNM2gNJVswhUr3tWA
+      BETTER_AUTH_PATH: auth
+      ORPC_PATH: rpc
+    steps:
+      - name: Download prepared workspace
+        uses: actions/download-artifact@v8
+        with:
+          name: prepared-workspace
+          path: ${{ runner.temp }}/prepared-workspace
+
+      - name: Restore prepared workspace
+        run: tar -xzf "$RUNNER_TEMP/prepared-workspace/workspace.tar.gz" -C "$GITHUB_WORKSPACE"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Run database migrations
+        run: pnpm run db:test:migrate
+
+      - name: Run tests
+        run: pnpm test
