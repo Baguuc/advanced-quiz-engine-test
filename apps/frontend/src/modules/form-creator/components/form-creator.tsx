@@ -181,11 +181,16 @@ function FormCreator() {
                         onChange={(e) => updateQuestion(questionIndex, e.target.value)}
                         className="mb-2"
                       />
-                      <SingleSelectQE 
-                        options={question.options}
-                        questionIndex={questionIndex}
-                        updateOption={updateOption}
-                      />
+                      {question.type}
+
+                      {question.type === "singleSelect" && (
+                          <SingleSelectQE 
+                          options={question.options}
+                          questionIndex={questionIndex}
+                          updateOption={updateOption}
+                        />
+                      )}
+                      
                     </div>
                   ))}
                 </div>
