@@ -14,6 +14,7 @@ function FormCreator() {
     {
       key: randomId(),
       question: "Nowe Pytanie",
+      type: "singleSelect",
       options: [
         { key: randomId(), text: "Opcja 1" },
         { key: randomId(), text: "Opcja 2" },
@@ -50,6 +51,7 @@ function FormCreator() {
     questionHandlers.append({
       key: randomId(),
       question: "Nowe Pytanie",
+      type: "singleSelect",
       options: [
         { key: randomId(), text: "Opcja 1" },
         { key: randomId(), text: "Opcja 2" },
@@ -58,16 +60,11 @@ function FormCreator() {
   }
 
   function addOption(questionIndex: number) {
-    const oldOptions = questions[questionIndex].options;
-    const newOptions = [...oldOptions];
-    questionHandlers.setItemProp(questionIndex, "options", newOptions);
+
   }
 
   function deleteOption(questionIndex: number, optionIndex: number) {
-    const oldOptions = questions[questionIndex].options;
-    const newOptions = [...oldOptions];
-    newOptions.splice(optionIndex, 1);
-    questionHandlers.setItemProp(questionIndex, "options", newOptions);
+
   }
 
   const submitForm = () =>
@@ -98,6 +95,7 @@ function FormCreator() {
       {
         key: randomId(),
         question: "Nowe Pytanie",
+        type: "singleSelect",
         options: [
           { key: randomId(), text: "Opcja 1" },
           { key: randomId(), text: "Opcja 2" },
@@ -178,36 +176,7 @@ function FormCreator() {
                         className="mb-2"
                       />
 
-                      <div className="mb-2 text-sm m-3 font-semibold  min-w-100">
-                        Opcje:
-                        <ul>
-                          {question.options.map((option, optionIndex) => (
-                            <li key={option.key}>
-                              <div className="flex items-center justify-content: center; gap-2 m-1">
-                                <Input
-                                  value={option.text}
-                                  onChange={(e) => {
-                                    updateOption(questionIndex, optionIndex, e.target.value);
-                                  }}
-                                  className="mb-1"
-                                />
-                                <Button
-                                  variant="outline"
-                                  className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1"
-                                  size="sm"
-                                  onClick={() => deleteOption(questionIndex, optionIndex)}
-                                >
-                                  {" "}
-                                  X{" "}
-                                </Button>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                        <Button variant="secondary" onClick={() => addOption(questionIndex)}>
-                          Dodaj Opcję
-                        </Button>
-                      </div>
+
                     </div>
                   ))}
                 </div>
