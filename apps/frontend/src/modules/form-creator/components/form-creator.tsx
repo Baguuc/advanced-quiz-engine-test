@@ -8,6 +8,16 @@ import { CheckIcon, ClipboardCopyIcon, PlusIcon } from "lucide-react";
 import { client } from "@/lib/client";
 import { randomId, useClipboard, useListState } from "@mantine/hooks";
 import SingleSelectQE from "@/components/question_editors/singleSelectQE";
+import MultiSelectQE from "@/components/question_editors/multiSelectQE";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu.tsx";
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
@@ -15,7 +25,7 @@ function FormCreator() {
     {
       key: randomId(),
       question: "Nowe Pytanie",
-      type: "singleSelect",
+      type: "single_choice",
       options: [
         { key: randomId(), text: "Opcja 1" },
         { key: randomId(), text: "Opcja 2" },
@@ -31,16 +41,28 @@ function FormCreator() {
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       setPage("name");
+    setData({ title: "", description: "" });
+    questionHandlers.setState([
+      {
+        key: randomId(),
+        question: "Nowe Pytanie",
+        type: "single_choice",
+        options: [
+          { key: randomId(), text: "Opcja 1" },
+          { key: randomId(), text: "Opcja 2" },
+        ],
+      },
+    ]);
     }
 
     setOpen(nextOpen);
   };
 
-  function addQuestion() {
+  function addQuestion(type: "single_choice" | "multiple_choice") {
     questionHandlers.append({
       key: randomId(),
       question: "Nowe Pytanie",
-      type: "singleSelect",
+      type: type,
       options: [
         { key: randomId(), text: "Opcja 1" },
         { key: randomId(), text: "Opcja 2" },
@@ -84,7 +106,7 @@ function FormCreator() {
         ...data,
         questions: questions.map((question, idx) => {
           return {
-            type: "single_choice",
+            type: question.type,
             position: idx,
             required: true,
             title: question.question,
@@ -97,24 +119,8 @@ function FormCreator() {
         }),
       })
       .then((url) => setFormUrl(new URL(url, window.location.origin).href))
-      .then(() => setPage("create"));
-
-  const closeModal = () => {
-    setPage("name");
-    setData({ title: "", description: "" });
-    questionHandlers.setState([
-      {
-        key: randomId(),
-        question: "Nowe Pytanie",
-        type: "singleSelect",
-        options: [
-          { key: randomId(), text: "Opcja 1" },
-          { key: randomId(), text: "Opcja 2" },
-        ],
-      },
-    ]);
-    setOpen(false);
-  };
+      .then(() => setPage("create")
+  );
 
   const copyLink = () => {
     clipboard.copy(formUrl);
@@ -188,8 +194,18 @@ function FormCreator() {
                       />
                       {question.type}
 
-                      {question.type === "singleSelect" && (
+                      {question.type === "single_choice" && (
                           <SingleSelectQE 
+                          options={question.options}
+                          questionIndex={questionIndex}
+                          updateOption={updateOption}
+                          deleteOption={deleteOption}
+                          addOption={addOption}
+                        />
+                      )}
+
+                      {question.type === "multiple_choice" && (
+                          <MultiSelectQE 
                           options={question.options}
                           questionIndex={questionIndex}
                           updateOption={updateOption}
@@ -202,13 +218,33 @@ function FormCreator() {
                   ))}
                 </div>
 
-                <Button
-                  variant="outline"
-                  className="mt-4 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 font-bold px-4 w-50 h-10"
-                  onClick={addQuestion}
-                >
-                  Dodaj Pytanie
-                </Button>
+                
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button
+                        variant="outline"
+                        className="mt-4 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 font-bold px-4 w-50 h-10"
+                      > Dodaj Pytanie </Button>
+                    }></DropdownMenuTrigger>
+
+                  <DropdownMenuContent
+                          className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                          side="bottom"
+                          align="end"
+                          sideOffset={4}
+                  >
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem onClick={() => addQuestion("single_choice")}>
+                        Pojedynczy wybór
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => addQuestion("multiple_choice")}>
+                        Wielokrotny wybór
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>  
               </div>
 
               <DialogFooter>
@@ -243,7 +279,7 @@ function FormCreator() {
                 <Button variant="outline" onClick={() => setPage("questions")}>
                   Wróć do pytań
                 </Button>
-                <Button type="submit" onClick={closeModal}>
+                <Button type="submit" onClick={() => setOpen(false)}>
                   OK
                 </Button>
               </DialogFooter>
