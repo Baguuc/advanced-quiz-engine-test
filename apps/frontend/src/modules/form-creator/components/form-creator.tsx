@@ -54,7 +54,12 @@ function FormCreator() {
 
   function addOption(questionIndex: number) {
     const oldOptions = questions[questionIndex].options;
-    const newOptions = [...oldOptions];
+    const newOptions = [
+      ...oldOptions,
+      {
+        key: randomId(),
+        text: `Opcja ${oldOptions.length + 1}`,
+      }];
     questionHandlers.setItemProp(questionIndex, "options", newOptions);
   }
 
@@ -188,6 +193,8 @@ function FormCreator() {
                           options={question.options}
                           questionIndex={questionIndex}
                           updateOption={updateOption}
+                          deleteOption={deleteOption}
+                          addOption={addOption}
                         />
                       )}
                       
