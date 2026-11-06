@@ -348,41 +348,42 @@ export const queryCompletionScreen = sessionOptionalProcedure
   )
   .errors({
     BAD_REQUEST: {},
+    NOT_FOUND: {},
   })
   .handler(async ({ input, context, errors }) => {
+    const form = await db.query.form.findFirst({
+      where: {
+        id: input.formId,
+      },
+    });
+
+    if (!form) {
+      throw errors.NOT_FOUND();
+    }
+
+    const fullyAnonymousForm = form.allowAnonymous && form.allowMultipleResponses;
+    const userAuthenticated = !!context.session;
+
+    if (!fullyAnonymousForm && !userAuthenticated) {
+      throw errors.BAD_REQUEST();
+    }
+
     if (!context.session) {
-      const form = await db.query.form.findFirst({
-        where: {
-          id: input.formId,
-        },
-      });
-
-      if (!form) {
-        throw errors.BAD_REQUEST();
-      }
-
       return { title: form.title, auth: false };
     }
 
     const userId = Number(context.session.user.id);
 
     const userResponse = await db.query.response.findFirst({
-      with: {
-        form: true,
-      },
       where: { formId: input.formId, userId },
     });
 
-    if (!userResponse) {
-      throw errors.BAD_REQUEST();
-    }
-
-    if (!userResponse.completed) {
+    if (!userResponse?.completed) {
       throw errors.BAD_REQUEST();
     }
 
     return {
-      title: userResponse.form.title,
+      title: form.title,
       auth: true,
     };
   });

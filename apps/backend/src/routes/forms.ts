@@ -31,12 +31,11 @@ export const getForm = sessionOptionalProcedure
       message: "Form not found",
     },
     BAD_REQUEST: {},
+    UNAUTHORIZED: {},
   })
   .handler(async ({ input, errors, context }) => {
     const form = await db.query.form.findFirst({
       columns: {
-        allowAnonymous: false,
-        allowMultipleResponses: false,
         ownerId: false,
         status: false,
         visibility: false,
@@ -77,6 +76,12 @@ export const getForm = sessionOptionalProcedure
 
     if (!form) {
       throw errors.NOT_FOUND();
+    }
+
+    // Tylko w przypadku gdzie odpowiedzi mogą być anonimowe oraz, można wysyłać kilka odpowiedzi,
+    // użytkownik może zobaczyć formularz bez autoryzacji.
+    if (!(form.allowAnonymous && form.allowMultipleResponses) && !context.session) {
+      throw errors.UNAUTHORIZED();
     }
 
     if (!context.session) {
