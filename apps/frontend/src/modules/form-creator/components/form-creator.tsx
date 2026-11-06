@@ -39,18 +39,18 @@ function FormCreator() {
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       setPage("name");
-    setData({ title: "", description: "" });
-    questionHandlers.setState([
-      {
-        key: randomId(),
-        question: "Nowe Pytanie",
-        type: "single_choice",
-        options: [
-          { key: randomId(), text: "Opcja 1" },
-          { key: randomId(), text: "Opcja 2" },
-        ],
-      },
-    ]);
+      setData({ title: "", description: "" });
+      questionHandlers.setState([
+        {
+          key: randomId(),
+          question: "Nowe Pytanie",
+          type: "single_choice",
+          options: [
+            { key: randomId(), text: "Opcja 1" },
+            { key: randomId(), text: "Opcja 2" },
+          ],
+        },
+      ]);
     }
 
     setOpen(nextOpen);
@@ -79,7 +79,8 @@ function FormCreator() {
       {
         key: randomId(),
         text: `Opcja ${oldOptions.length + 1}`,
-      }];
+      },
+    ];
     questionHandlers.setItemProp(questionIndex, "options", newOptions);
   }
 
@@ -117,8 +118,7 @@ function FormCreator() {
         }),
       })
       .then((url) => setFormUrl(new URL(url, window.location.origin).href))
-      .then(() => setPage("create")
-  );
+      .then(() => setPage("create"));
 
   const copyLink = () => {
     clipboard.copy(formUrl);
@@ -193,7 +193,7 @@ function FormCreator() {
                       {question.type}
 
                       {question.type === "single_choice" && (
-                          <SingleSelectQE 
+                        <SingleSelectQE
                           options={question.options}
                           questionIndex={questionIndex}
                           updateOption={updateOption}
@@ -203,7 +203,7 @@ function FormCreator() {
                       )}
 
                       {question.type === "multiple_choice" && (
-                          <MultiSelectQE 
+                        <MultiSelectQE
                           options={question.options}
                           questionIndex={questionIndex}
                           updateOption={updateOption}
@@ -211,12 +211,9 @@ function FormCreator() {
                           addOption={addOption}
                         />
                       )}
-                      
                     </div>
                   ))}
                 </div>
-
-                
 
                 <DropdownMenu>
                   <DropdownMenuTrigger
@@ -224,25 +221,27 @@ function FormCreator() {
                       <Button
                         variant="outline"
                         className="mt-4 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 font-bold px-4 w-50 h-10"
-                      > Dodaj Pytanie </Button>
-                    }></DropdownMenuTrigger>
+                      >
+                        {" "}
+                        Dodaj Pytanie{" "}
+                      </Button>
+                    }
+                  ></DropdownMenuTrigger>
 
                   <DropdownMenuContent
-                          className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                          side="bottom"
-                          align="end"
-                          sideOffset={4}
+                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                    side="bottom"
+                    align="end"
+                    sideOffset={4}
                   >
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={() => addQuestion("single_choice")}>
-                        Pojedynczy wybór
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => addQuestion("single_choice")}>Pojedynczy wybór</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => addQuestion("multiple_choice")}>
                         Wielokrotny wybór
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
-                </DropdownMenu>  
+                </DropdownMenu>
               </div>
 
               <DialogFooter>
