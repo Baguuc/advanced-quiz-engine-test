@@ -1,5 +1,11 @@
 import { createForm, getForm, getFormDetails, listForms, updateFormStatus } from "./forms.ts";
-import { queryCompletionScreen, startResponse, submitResponse, updateResponse } from "./responses.ts";
+import {
+  queryCompletionScreen,
+  startResponse,
+  submitAnonymousResponse,
+  submitResponse,
+  updateResponse,
+} from "./responses.ts";
 
 export const router = {
   form: {
@@ -13,6 +19,7 @@ export const router = {
     start: startResponse,
     update: updateResponse,
     submit: submitResponse,
+    submitAnonymous: submitAnonymousResponse,
     queryCompletionScreen,
   },
 };

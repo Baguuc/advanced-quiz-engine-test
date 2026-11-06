@@ -12,7 +12,7 @@ import {
   questionOption,
   response,
 } from "../db/schema.ts";
-import { protectedProcedure } from "../lib/server.ts";
+import { protectedProcedure, sessionOptionalProcedure } from "../lib/server.ts";
 
 export const listForms = protectedProcedure.handler(async ({ context }) => {
   const userId = Number(context.session.user.id);
@@ -24,19 +24,18 @@ export const listForms = protectedProcedure.handler(async ({ context }) => {
   });
 });
 
-export const getForm = protectedProcedure
+export const getForm = sessionOptionalProcedure
   .input(z.object({ formId: z.number() }))
   .errors({
     NOT_FOUND: {
       message: "Form not found",
     },
     BAD_REQUEST: {},
+    UNAUTHORIZED: {},
   })
   .handler(async ({ input, errors, context }) => {
     const form = await db.query.form.findFirst({
       columns: {
-        allowAnonymous: false,
-        allowMultipleResponses: false,
         ownerId: false,
         status: false,
         visibility: false,
@@ -77,6 +76,16 @@ export const getForm = protectedProcedure
 
     if (!form) {
       throw errors.NOT_FOUND();
+    }
+
+    // Tylko w przypadku gdzie odpowiedzi mogą być anonimowe oraz, można wysyłać kilka odpowiedzi,
+    // użytkownik może zobaczyć formularz bez autoryzacji.
+    if (!(form.allowAnonymous && form.allowMultipleResponses) && !context.session) {
+      throw errors.UNAUTHORIZED();
+    }
+
+    if (!context.session) {
+      return { form, answers: {} };
     }
 
     const response = await db.query.response.findFirst({

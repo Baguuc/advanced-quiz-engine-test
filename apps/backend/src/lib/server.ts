@@ -19,3 +19,13 @@ const requireSession = base.middleware(async ({ context, next }) => {
 });
 
 export const protectedProcedure = base.use(requireSession);
+
+const optionalSession = base.middleware(async ({ context, next }) => {
+  const session = await auth.api.getSession({
+    headers: context.reqHeaders ?? new Headers(),
+  });
+
+  return next({ context: { session } });
+});
+
+export const sessionOptionalProcedure = base.use(optionalSession);
