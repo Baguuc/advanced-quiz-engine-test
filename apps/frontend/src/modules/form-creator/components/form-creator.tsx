@@ -16,10 +16,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
+import type { FormQuestionType } from "%/form/types.ts";
+
+interface FormCreatorQuestionType {
+  key: string;
+  question: string;
+  type: FormQuestionType["type"];
+  options: {
+    key: string;
+    text: string;
+  }[];
+}
 
 function FormCreator() {
   const [page, setPage] = useState<"name" | "questions" | "create">("name");
-  const [questions, questionHandlers] = useListState([
+  const [questions, questionHandlers] = useListState<FormCreatorQuestionType>([
     {
       key: randomId(),
       question: "Nowe Pytanie",
