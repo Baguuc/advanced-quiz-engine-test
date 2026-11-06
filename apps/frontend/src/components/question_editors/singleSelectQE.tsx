@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-function SingleSelectQE(props: {options, questionIndex: number, updateOption, deleteOption, addOption}) {
+function SingleSelectQE(props: {options: { key: string; text: string }[], questionIndex: number, updateOption: (questionIndex: number, optionIndex: number, value: string) => void, deleteOption: (questionIndex: number, optionIndex: number) => void, addOption: (questionIndex: number) => void}) {
     return (<>
         <div>
             <ul>
