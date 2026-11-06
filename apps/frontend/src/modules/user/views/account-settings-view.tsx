@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import { Field, FieldLabel } from "@/components/ui/field.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { authClient } from "@/lib/auth.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
-import { SquarePenIcon } from "lucide-react";
+import { authClient } from "@/lib/auth.ts";
+import { ChangeNameDialog } from "../components/change-name-dialog.tsx";
+import { ChangePasswordDialog } from "../components/change-password-dialog.tsx";
+import { SessionsCard } from "../components/sessions-card.tsx";
 
 export function AccountSettingsView() {
   const session = authClient.useSession();
@@ -12,8 +13,9 @@ export function AccountSettingsView() {
   }
 
   const user = session.data?.user;
+  const currentSession = session.data?.session;
 
-  if (!user) {
+  if (!user || !currentSession) {
     return <Spinner className="size-10 mx-auto mt-5" />;
   }
 
@@ -29,30 +31,17 @@ export function AccountSettingsView() {
             <FieldLabel className="justify-start -mt-1">
               <p className="font-semibold">Twoja nazwa:</p>
               {user.name}
-              <Button variant="secondary" size="icon" className="ml-auto">
-                <SquarePenIcon />
-              </Button>
+              <ChangeNameDialog currentName={user.name} />
             </FieldLabel>
             <FieldLabel className="justify-start -mt-1">
               <p className="font-semibold">Twoje hasło:</p>
               *******
-              <Button variant="secondary" size="icon" className="ml-auto">
-                <SquarePenIcon />
-              </Button>
+              <ChangePasswordDialog />
             </FieldLabel>
           </Field>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">Sesje użytkownika</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Field>
-            <FieldLabel>[Tu będą sesje]</FieldLabel>
-          </Field>
-        </CardContent>
-      </Card>
+      <SessionsCard currentSessionId={currentSession.id} />
     </div>
   );
 }

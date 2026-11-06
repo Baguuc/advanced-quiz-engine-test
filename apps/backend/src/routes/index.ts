@@ -1,4 +1,4 @@
-import { createForm, getForm, getFormDetails, listForms } from "./forms.ts";
+import { createForm, getForm, getFormDetails, listForms, updateFormStatus } from "./forms.ts";
 import {
   queryCompletionScreen,
   startResponse,
@@ -12,6 +12,7 @@ export const router = {
     list: listForms,
     get: getForm,
     getDetails: getFormDetails,
+    updateStatus: updateFormStatus,
     create: createForm,
   },
   response: {
