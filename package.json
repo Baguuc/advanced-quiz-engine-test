@@ -8,6 +8,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "pnpm --sequential --filter backend --filter frontend lint",
+    "typecheck": "pnpm --parallel --filter backend --filter frontend typecheck",
     "test": "cd apps/backend && pnpm test",
     "db:generate": "cd apps/backend && npx drizzle-kit generate",
     "db:migrate": "cd apps/backend && npx drizzle-kit migrate",
