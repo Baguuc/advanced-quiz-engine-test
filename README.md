@@ -3,6 +3,7 @@
 ---
 ## Dokumentacja
 
+Instrukcja dotyczy <b>INSTALACJI</b> a nie <b>AKTUALIZACJI</b><br>
 Spis całej dostępnej dokumentacji, podzielona na kategorie.
 Jeśli pierwszy raz pracujesz z projektem, zacznij od [przeczytania wymagań systemowych](docs/dev/prerequisites.md).
 
