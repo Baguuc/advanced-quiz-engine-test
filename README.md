@@ -1,7 +1,16 @@
 # advanced-quiz-engine
 
+<<<<<<< HEAD
 ### Poradnik odpalenia wersji podglądowej projektu
 Jeśli chcesz stestować projekt przejdź do [poradnika wersji podglądowej](docs/preview/start.md).
+=======
+---
+## Dokumentacja
+
+Instrukcja dotyczy <b>INSTALACJI</b> a nie <b>AKTUALIZACJI</b><br>
+Spis całej dostępnej dokumentacji, podzielona na kategorie.
+Jeśli pierwszy raz pracujesz z projektem, zacznij od [przeczytania wymagań systemowych](docs/dev/prerequisites.md).
+>>>>>>> d64bc3d (zaktualizowanie opisu dla idiotow)
 
 ### Spis treści dokumentacji
 * Wersja podglądowa
