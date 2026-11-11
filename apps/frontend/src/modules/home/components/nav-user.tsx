@@ -25,6 +25,8 @@ export const NavUser = () => {
 
   if (!user) return null;
 
+  const placeholderEmail = user.email.split("@")[1].includes("placeholder");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -42,7 +44,7 @@ export const NavUser = () => {
         </Avatar>
         <div className="grid flex-1 text-left text-sm leading-tight">
           <span className="truncate font-medium">{user.name}</span>
-          <span className="truncate text-xs">{user.email}</span>
+          {!placeholderEmail && <span className="truncate text-xs">{user.email}</span>}
         </div>
         <ChevronsUpDown className="ml-auto size-4" />
       </DropdownMenuTrigger>
@@ -61,7 +63,7 @@ export const NavUser = () => {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight text-white">
                 <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                {!placeholderEmail && <span className="truncate text-xs">{user.email}</span>}
               </div>
             </div>
           </DropdownMenuLabel>
