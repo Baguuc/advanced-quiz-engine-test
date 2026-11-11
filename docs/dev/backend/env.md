@@ -38,3 +38,15 @@ np. /auth, auth, /betterauth
 Ustawia scieżke (po bazowym url) na której będzie działać moduł całego api (rpc).
 '/' wstawiony na początek będzie usunięty.
 np. /rpc, orpc, /orpc
+
+### SOCIAL_ROBLOX_CLIENT_ID
+Id aplikacji OAuth do logowania przez Roblox.
+
+### SOCIAL_ROBLOX_CLIENT_SECRET
+Klucz aplikacji OAuth do logowanie przez Roblox.
+
+### SOCIAL_GITHUB_CLIENT_ID
+Id aplikacji OAuth do logowania przez Github.
+
+### SOCIAL_GITHUB_CLIENT_SECRET
+Klucz aplikacji OAuth do logowanie przez Github.
