@@ -1,37 +1,14 @@
 # Zmienne środowiskowe dla wersji podglądowej
 
-## Konfiguracja API
-Zmienne środowiskowe konfigurujące backend.
-
-### API_PORT
-API_PORT ustawia port na którym będzie działać API.
-np. 3000
-
-### API_BASE_URL
-API_BASE_URL ustawia bazowy url na którym ma działać API.
-np. http://localhost:3000
-
-### AUTH_SECRET
-AUTH_SECRET ustawia klucz używany przez API do hashowania.
+`docker-compose.preview.yaml` uruchamia frontend i backend razem w jednym kontenerze oraz PostgreSQL jako osobny serwis. Ustaw w pliku `.env` trzy zmienne:
 
 ### APP_URL
-APP_URL ustawia url frontendu który należy dodać do polityki CORS w backendzie.
-Należy to ustawić na url z jakiego użytkownik bedzie używał aplikacji.
-np. http://localhost:5173
+Publiczny adres aplikacji, np. `http://localhost:5173`. Jest używany podczas budowania frontendu oraz przez backend jako bazowy adres aplikacji i zaufane źródło CORS.
 
-## Konfiguracja Frontendu
-Zmienne środowiskowe konfigurujące frontend.
+### AUTH_SECRET
+Długi, losowy sekret używany przez moduł autoryzacji.
+na potrzeby podglądowe użyj prostego klucza, np. 1234.
 
-### APP_PORT
-APP_PORT ustawia port na którym będzie uruchomiona aplikacja frontendu.
-
-## Konfiguracja wspólna
-Zmienne środowiskowe konfigurujące backend I frontend.
-
-### AUTH_PATH
-AUTH_PATH ustawia ścieżkę na której zapytania przyjmował będzie moduł autoryzacji.
-np. /auth
-
-### RPC_PATH
-AUTH_PATH ustawia ścieżkę na której zapytania przyjmowało API.
-np. /rpc
+### DATABASE_URL
+Adres połączenia z bazą danych. Dla bazy uruchamianej przez ten plik Compose użyj `postgresql://dev:dev@postgres:5432/quiz-engine`.
+Przykładowy plik znajduje się w [`.env.example`](../../.env.example). Aplikacja jest dostępna na porcie `5173`; backend nasłuchuje wewnętrznie na porcie `3000`, a Nginx przekazuje do niego żądania `/rpc` i `/auth`.

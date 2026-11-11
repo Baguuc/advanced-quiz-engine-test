@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:18
-    container_name: quiz-engine-db
+    container_name: quiz-engine-database
     restart: unless-stopped
     environment:
       POSTGRES_DB: quiz-engine
@@ -13,52 +13,37 @@ services:
       - postgres_data:/var/lib/postgresql
       - ./postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U dev -d quiz-engine" ]
+      test: ["CMD-SHELL", "pg_isready -U dev -d quiz-engine"]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
       - postgres
 
-  backend:
-    container_name: backend
+  app:
+    container_name: quiz-engine
     build:
       context: .
-      dockerfile: apps/backend/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        APP_URL: ${APP_URL:?APP_URL is required}
     restart: unless-stopped
     environment:
-      APP_PORT: ${API_PORT}
-      APP_BASE_URL: ${API_BASE_URL}
-      CORS_TRUSTED_ORIGIN: ${APP_URL}
-      DATABASE_URL: "postgresql://dev:dev@postgres:5432/quiz-engine"
-      BETTER_AUTH_SECRET: ${AUTH_SECRET}
-      BETTER_AUTH_PATH: ${AUTH_PATH}
-      ORPC_PATH: ${RPC_PATH}
+      APP_URL: ${APP_URL:?APP_URL is required}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
+      DATABASE_URL: "${DATABASE_URL:-postgresql://dev:dev@postgres:5432/quiz-engine}"
     ports:
-      - "${API_PORT:-3000}:${API_PORT:-3000}"
+      - "5173:80"
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - postgres
 
-  frontend:
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: apps/frontend/Dockerfile
-      args:
-        VITE_API_URL: ${API_BASE_URL}
-        VITE_RPC_PATH: ${RPC_PATH}
-        VITE_AUTH_PATH: ${AUTH_PATH}
-    restart: unless-stopped
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
 networks:
   postgres:
     name: postgres
     driver: bridge
+
 volumes:
   postgres_data:
