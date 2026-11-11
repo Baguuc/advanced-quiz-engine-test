@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
 import { AlertCircleIcon } from "lucide-react";
 import { authClient } from "@/lib/auth.ts";
 import { FacebookLogo } from "%/legal/components/facebook-logo.tsx";
-import { GoogleLogo } from "%/legal/components/google-logo.tsx";
+import { RobloxLogo } from "%/legal/components/roblox-logo.tsx";
 
 const formSchema = z.object({
   email: z.email("Niepoprawny adres email"),
@@ -43,6 +43,15 @@ export function SignInForm() {
     }
   };
 
+  const loginRoblox = async () => {
+    const data = await authClient.signIn.social({
+      provider: "roblox",
+      callbackURL: "http://localhost:5173",
+    });
+
+    console.log(data);
+  };
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -53,9 +62,9 @@ export function SignInForm() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Field>
-              <Button variant="outline" type="button">
-                <GoogleLogo />
-                Zaloguj się z Google
+              <Button variant="outline" type="button" onClick={loginRoblox}>
+                <RobloxLogo />
+                Zaloguj się z Roblox
               </Button>
               <Button variant="outline" type="button">
                 <FacebookLogo />

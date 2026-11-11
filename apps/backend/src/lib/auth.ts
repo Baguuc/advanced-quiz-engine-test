@@ -15,6 +15,12 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  socialProviders: {
+    roblox: {
+      clientId: process.env.SOCIAL_ROBLOX_CLIENT_ID as string,
+      clientSecret: process.env.SOCIAL_ROBLOX_CLIENT_SECRET as string,
+    },
+  },
   advanced: {
     database: {
       generateId: "serial",
