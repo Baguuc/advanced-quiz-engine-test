@@ -31,7 +31,7 @@ services:
     environment:
       APP_URL: ${APP_URL:?APP_URL is required}
       AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
-      DATABASE_URL: "${DATABASE_URL:-postgresql://dev:dev@postgres:5432/quiz-engine}"
+      DATABASE_URL: postgresql://dev:dev@postgres:5432/quiz-engine
     ports:
       - "5173:80"
     depends_on:
