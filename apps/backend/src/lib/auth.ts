@@ -20,6 +20,10 @@ export const auth = betterAuth({
       clientId: config.socialRobloxClientId,
       clientSecret: config.socialRobloxClientSecret,
     },
+    github: {
+      clientId: config.socialGithubClientId,
+      clientSecret: config.socialGithubClientSecret,
+    },
   },
   advanced: {
     database: {

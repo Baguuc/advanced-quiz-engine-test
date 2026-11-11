@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
 import { AlertCircleIcon } from "lucide-react";
 import { authClient } from "@/lib/auth.ts";
-import { FacebookLogo } from "%/legal/components/facebook-logo.tsx";
+import { GithubLogo } from "%/legal/components/github-logo.tsx";
 import { RobloxLogo } from "%/legal/components/roblox-logo.tsx";
 
 const formSchema = z.object({
@@ -43,9 +43,10 @@ export function SignInForm() {
     }
   };
 
-  const loginRoblox = async () => {
+  type SocialProvider = Parameters<typeof authClient.signIn.social>[0]["provider"];
+  const loginSocial = async (provider: SocialProvider) => {
     const data = await authClient.signIn.social({
-      provider: "roblox",
+      provider: provider,
       callbackURL: "http://localhost:5173",
     });
 
@@ -56,19 +57,19 @@ export function SignInForm() {
     <Card>
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Witaj z powrotem</CardTitle>
-        <CardDescription>Zaloguj się za pomocą swojego konta Google lub Facebook</CardDescription>
+        <CardDescription>Zaloguj się za pomocą swojego konta Roblox lub Github</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Field>
-              <Button variant="outline" type="button" onClick={loginRoblox}>
+              <Button variant="outline" type="button" onClick={() => loginSocial("roblox")}>
                 <RobloxLogo />
                 Zaloguj się z Roblox
               </Button>
-              <Button variant="outline" type="button">
-                <FacebookLogo />
-                Zaloguj się z Facebook
+              <Button variant="outline" type="button" onClick={() => loginSocial("github")}>
+                <GithubLogo />
+                Zaloguj się z Github
               </Button>
             </Field>
             <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">Albo kontynuuj z</FieldSeparator>
