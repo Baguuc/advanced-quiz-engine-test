@@ -30,6 +30,12 @@ docker compose -f docker-compose.preview.yaml up -d
 
 ---
 ## 5. Zmigruj bazę danych.
+W folderze apps/backend stwórz plik .env i dodaj do niego poniższą treść:
+```
+DATABASE_URL="postgresql://dev:dev@localhost:5432/quiz-engine"
+```
+
+Później uruchom komendę
 ```
 pnpm run db:migrate
 ```
