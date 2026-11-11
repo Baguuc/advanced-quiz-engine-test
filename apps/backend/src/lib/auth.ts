@@ -17,8 +17,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     roblox: {
-      clientId: process.env.SOCIAL_ROBLOX_CLIENT_ID as string,
-      clientSecret: process.env.SOCIAL_ROBLOX_CLIENT_SECRET as string,
+      clientId: config.socialRobloxClientId,
+      clientSecret: config.socialRobloxClientSecret,
     },
   },
   advanced: {
