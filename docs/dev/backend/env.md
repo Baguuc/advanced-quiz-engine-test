@@ -1,6 +1,14 @@
 # Zmienne środowiskowe dla projektu backendu
 Backend używa zmiennych środowiskowych aby konfigurować ważne dane konfiguracyjne (np. url bazy danych, sciezki api itd).
 
+## Połączony obraz aplikacji
+Główny `Dockerfile` uruchamia backend i frontend razem. Przy budowaniu obrazu ustaw argument `APP_URL` na publiczny adres aplikacji. Przy uruchomieniu kontenera wymagane są tylko:
+- `APP_URL` — publiczny adres aplikacji; ustawiany jako `APP_BASE_URL` i `CORS_TRUSTED_ORIGIN`.
+- `AUTH_SECRET` — ustawiany jako `BETTER_AUTH_SECRET`.
+- `DATABASE_URL` — adres połączenia z bazą danych.
+
+Obraz ustawia `APP_PORT=3000`, `BETTER_AUTH_PATH=/auth` i `ORPC_PATH=/rpc`. Podczas budowania `APP_URL` jest przekazywany jako argument budowania i używany przez frontend jako `VITE_API_URL`; `VITE_RPC_PATH` ma wartość `rpc` (klient dodaje początkowy `/`), a `VITE_AUTH_PATH` — `/auth`.
+
 ### APP_PORT
 APP_PORT ustawia port na jakim bedzie dzialac aplikacja.
 np. 3000
