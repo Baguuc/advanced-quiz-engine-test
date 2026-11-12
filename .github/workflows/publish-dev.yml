@@ -6,6 +6,11 @@ on:
     types: [completed]
     branches:
       - staging
+  pull_request:
+    workflows: [CI]
+    types: [completed]
+    branches:
+      - 79-cicd-na-serwer
   workflow_dispatch:
 
 permissions:

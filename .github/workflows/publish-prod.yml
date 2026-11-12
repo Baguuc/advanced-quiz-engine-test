@@ -6,6 +6,12 @@ on:
     types: [completed]
     branches:
       - main
+      - 79-cicd-na-serwer
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches:
+      - 79-cicd-na-serwer
   workflow_dispatch:
 
 permissions:
