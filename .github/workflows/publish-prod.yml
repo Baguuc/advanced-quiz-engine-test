@@ -7,7 +7,7 @@ on:
     branches:
       - main
       - 79-cicd-na-serwer
-  workflow_run:
+  pull_request:
     workflows: [CI]
     types: [completed]
     branches:
