@@ -7,9 +7,12 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.ts";
 import { RequestHeadersHandlerPlugin } from "@orpc/server/plugins";
 import { getEnvConfig } from "./lib/env.ts";
+import { migrateDatabase } from "./db/db.ts";
 
 const app = express();
 const config = getEnvConfig();
+
+await migrateDatabase();
 
 app.use(
   cors({
