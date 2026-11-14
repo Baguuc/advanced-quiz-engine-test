@@ -48,8 +48,6 @@ jobs:
         with:
           images: docker.io/${{ vars.DOCKERHUB_USERNAME }}/advanced-quiz-engine
           tags: |
-            type=raw,value=prod,enable=${{ github.event_name == 'workflow_run' }}
-            type=raw,value=manual-${{ github.run_id }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=sha,prefix=main-
 
       - name: Build and publish image
