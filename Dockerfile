@@ -35,6 +35,7 @@ COPY packages/common/package.json packages/common/package.json
 RUN pnpm install --prod --frozen-lockfile --filter backend...
 
 COPY --from=build /app/apps/backend/dist apps/backend/dist
+COPY --from=build /app/apps/backend/drizzle apps/backend/drizzle
 COPY --from=build /app/packages/common packages/common
 COPY --from=build /app/apps/frontend/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/http.d/default.conf

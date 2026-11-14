@@ -14,5 +14,5 @@ export const pool = new Pool({
 export const db = drizzle({ relations, client: pool });
 
 export const migrateDatabase = async () => {
-  await migrate(db, { migrationsFolder: './drizzle' });
-}
+  await migrate(db, { migrationsFolder: "./drizzle" });
+};
