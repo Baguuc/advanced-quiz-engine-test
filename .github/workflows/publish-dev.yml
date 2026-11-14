@@ -6,11 +6,6 @@ on:
     types: [completed]
     branches:
       - staging
-  pull_request:
-    workflows: [CI]
-    types: [completed]
-    branches:
-      - 79-cicd-na-serwer
   workflow_dispatch:
 
 permissions:
@@ -48,6 +43,7 @@ jobs:
           images: docker.io/${{ vars.DOCKERHUB_USERNAME }}/advanced-quiz-engine
           tags: |
             type=sha,prefix=dev-
+            type=raw,value=dev-latest
 
       - name: Build and publish image
         uses: docker/build-push-action@v6
